@@ -5,9 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Data
 @NoArgsConstructor
@@ -17,4 +15,5 @@ public class OrganizationDto {
     private String name;
     private String contact;
     private List<SocialTaskDto> socialTasks;
+
 }

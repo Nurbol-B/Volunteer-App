@@ -1,10 +1,12 @@
 package com.example.FinalProject.service.impl;
 
 import com.example.FinalProject.dto.SocialTaskDto;
+import com.example.FinalProject.entity.Organization;
 import com.example.FinalProject.entity.SocialTask;
 import com.example.FinalProject.enums.StatusTask;
 import com.example.FinalProject.exception.NotFoundException;
 import com.example.FinalProject.mapper.SocialTaskMapper;
+import com.example.FinalProject.repository.OrganizationRepository;
 import com.example.FinalProject.repository.SocialTaskRepository;
 import com.example.FinalProject.service.SocialTaskService;
 import jakarta.persistence.EntityNotFoundException;
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 public class SocialTaskServiceImpl implements SocialTaskService {
     private final SocialTaskRepository socialTaskRepository;
     private final SocialTaskMapper socialTaskMapper;
+    private final OrganizationRepository organizationRepository;
 
     @Override
     public List<SocialTaskDto> getAll() {
@@ -35,9 +38,24 @@ public class SocialTaskServiceImpl implements SocialTaskService {
 
     @Override
     public SocialTaskDto createSocialTask(SocialTaskDto socialTaskDto) {
+//        Long organizationId = socialTaskDto.getOrganizationId();
+//        socialTaskDto.setOrganizationId(organizationId);
+//        return socialTaskMapper.toDto(socialTaskRepository.save(socialTaskMapper.toEntity(socialTaskDto)));
         Long organizationId = socialTaskDto.getOrganizationId();
-        socialTaskDto.setOrganizationId(organizationId);
-        return socialTaskMapper.toDto(socialTaskRepository.save(socialTaskMapper.toEntity(socialTaskDto)));
+
+        // Получаем объект Organization по organizationId
+        Organization organization = organizationRepository.findById(organizationId)
+                .orElseThrow(() -> new RuntimeException("Организация с id " + organizationId + " не найдена"));
+
+        // Создаем новый SocialTask и устанавливаем связь с Organization
+        SocialTask socialTask = socialTaskMapper.toEntity(socialTaskDto);
+        socialTask.setOrganization(organization);
+
+        // Сохраняем SocialTask в базу данных
+        SocialTask savedSocialTask = socialTaskRepository.save(socialTask);
+
+        // Преобразуем сохраненный SocialTask обратно в DTO и возвращаем его
+        return socialTaskMapper.toDto(savedSocialTask);
     }
 
     @Override

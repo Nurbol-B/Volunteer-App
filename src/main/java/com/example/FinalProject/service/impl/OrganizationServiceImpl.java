@@ -61,11 +61,9 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
     @Override
     public List<SocialTaskDto> findTasksByOrganization(Long organizationId) {
-        // Найти организацию по идентификатору
         Organization organization = organizationRepository.findById(organizationId)
                 .orElseThrow(() -> new EntityNotFoundException("Organization with id " + organizationId + " not found"));
 
-        // Получить список задач, опубликованных этой организацией
         return organization.getSocialTasks().stream()
                 .map(socialTaskMapper::toDto)
                 .collect(Collectors.toList());    }

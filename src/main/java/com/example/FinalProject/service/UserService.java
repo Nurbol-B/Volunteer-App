@@ -1,6 +1,7 @@
 package com.example.FinalProject.service;
 
 import com.example.FinalProject.dto.UserDto;
+import com.example.FinalProject.entity.Role;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -13,4 +14,6 @@ public interface UserService {
     UserDto createUser(UserDto user);
     void deleteById(Long id);
     BigDecimal getBalanceByUsername(String userName);
+    UserDto changeRole(Long id, Role role);
+
 }

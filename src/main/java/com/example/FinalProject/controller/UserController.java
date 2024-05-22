@@ -1,6 +1,7 @@
 package com.example.FinalProject.controller;
 
 import com.example.FinalProject.dto.UserDto;
+import com.example.FinalProject.entity.Role;
 import com.example.FinalProject.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -47,5 +48,28 @@ public class UserController {
     public ResponseEntity<BigDecimal> getBalanceByUsername(@PathVariable String username){
         BigDecimal balance = userService.getBalanceByUsername(username);
         return ResponseEntity.ok(balance);
+    }
+    @PutMapping("/changeRole/{id}")
+    public ResponseEntity<UserDto> changeUserRole(@PathVariable Long id, @RequestBody Role role) {
+        if (id == null || role == null) {
+//            logger.error("Invalid id or role: id={}, role={}", id, role);
+            return ResponseEntity.badRequest().build();
+        }
+        try {
+            UserDto updatedUserRole = userService.changeRole(id, role);
+            if (updatedUserRole != null) {
+//                logger.info("Successfully changed role of user with id {}", id);
+                return ResponseEntity.ok(updatedUserRole);
+            } else {
+//                logger.warn("User with id {} not found", id);
+                return ResponseEntity.notFound().build();
+            }
+        } catch (IllegalArgumentException e) {
+//            logger.error("Invalid role value: {}", role, e);
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+//            logger.error("Error changing role of user with id {}", id, e);
+            return ResponseEntity.status(500).build();
+        }
     }
 }

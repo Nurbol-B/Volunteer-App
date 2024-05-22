@@ -24,9 +24,5 @@ public class SocialTask {
     @ManyToOne
     @JoinColumn(name = "organization_id")
     private Organization organization;
-
-//    @Column(name = "organization_id")
-//    private Long organizationId;
-
 }
 

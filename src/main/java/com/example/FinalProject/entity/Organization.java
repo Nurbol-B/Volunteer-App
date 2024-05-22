@@ -3,10 +3,11 @@ package com.example.FinalProject.entity;
 import com.example.FinalProject.dto.SocialTaskDto;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.data.repository.cdi.Eager;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+
+import static jakarta.persistence.FetchType.EAGER;
 
 @Data
 @Table
@@ -18,6 +19,7 @@ public class Organization {
     private Long id;
     private String name;
     private String contact;
-    @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL,fetch = EAGER)
     private List<SocialTask> socialTasks;
+
 }

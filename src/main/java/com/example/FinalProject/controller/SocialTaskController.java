@@ -48,8 +48,8 @@ public class SocialTaskController {
         socialTaskService.changeTaskStatus(taskId, statusTask);
         return ResponseEntity.ok().build();
     }
-    @GetMapping("/organizationTask")
-    public ResponseEntity<SocialTaskDto> getTaskByOrganizationId(@RequestParam Long organizationId){
+    @GetMapping("/organizationTask/{organizationId}")
+    public ResponseEntity<SocialTaskDto> getTaskByOrganizationId(@PathVariable Long organizationId){
     socialTaskService.getOrganizationTasks(organizationId);
     return ResponseEntity.ok().build();
     }
