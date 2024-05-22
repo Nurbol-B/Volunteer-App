@@ -53,4 +53,27 @@ public class SocialTaskController {
     socialTaskService.getOrganizationTasks(organizationId);
     return ResponseEntity.ok().build();
     }
+    @PutMapping("/assign/{taskId}/user/{userId}")
+    public ResponseEntity<SocialTaskDto> assignTaskToUser(@PathVariable Long taskId, @PathVariable Long userId) {
+        SocialTaskDto task = socialTaskService.assignTaskToUser(taskId, userId);
+        if (task != null) {
+            return ResponseEntity.ok(task);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    @PutMapping("/complete/{taskId}")
+    public ResponseEntity<SocialTaskDto> completeTask(@PathVariable Long taskId) {
+        SocialTaskDto task = socialTaskService.completeTask(taskId);
+        if (task != null) {
+            return ResponseEntity.ok(task);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<SocialTaskDto>> getTasksByUser(@PathVariable Long userId) {
+        List<SocialTaskDto> tasks = socialTaskService.getTasksByUser(userId);
+        return ResponseEntity.ok(tasks);
+    }
 }

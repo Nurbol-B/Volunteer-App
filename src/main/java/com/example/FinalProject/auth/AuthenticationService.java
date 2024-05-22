@@ -1,9 +1,9 @@
 package com.example.FinalProject.auth;
 
 
-import com.example.FinalProject.config.JwtService;
-import com.example.FinalProject.entity.Role;
+import com.example.FinalProject.secutityConfig.JwtService;
 import com.example.FinalProject.entity.User;
+import com.example.FinalProject.enums.Role;
 import com.example.FinalProject.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;

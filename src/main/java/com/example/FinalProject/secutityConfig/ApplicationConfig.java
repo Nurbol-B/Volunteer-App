@@ -1,4 +1,4 @@
-package com.example.FinalProject.config;
+package com.example.FinalProject.secutityConfig;
 
 import com.example.FinalProject.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

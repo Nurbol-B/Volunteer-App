@@ -24,5 +24,8 @@ public class SocialTask {
     @ManyToOne
     @JoinColumn(name = "organization_id")
     private Organization organization;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User assignedUser;
 }
 

@@ -1,7 +1,7 @@
 package com.example.FinalProject.controller;
 
 import com.example.FinalProject.dto.UserDto;
-import com.example.FinalProject.entity.Role;
+import com.example.FinalProject.enums.Role;
 import com.example.FinalProject.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -56,7 +56,7 @@ public class UserController {
             return ResponseEntity.badRequest().build();
         }
         try {
-            UserDto updatedUserRole = userService.changeRole(id, role);
+            UserDto updatedUserRole = userService.changeRole(id,role);
             if (updatedUserRole != null) {
 //                logger.info("Successfully changed role of user with id {}", id);
                 return ResponseEntity.ok(updatedUserRole);

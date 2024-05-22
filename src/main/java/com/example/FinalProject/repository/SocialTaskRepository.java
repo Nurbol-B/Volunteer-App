@@ -9,6 +9,7 @@ import java.util.List;
 @Repository
 public interface SocialTaskRepository extends JpaRepository<SocialTask, Long> {
     List<SocialTask> findByOrganizationId(Long organizationId);
+    List<SocialTask> findByAssignedUserId(Long userId);
 
 
 }

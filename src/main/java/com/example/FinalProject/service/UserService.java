@@ -1,7 +1,7 @@
 package com.example.FinalProject.service;
 
 import com.example.FinalProject.dto.UserDto;
-import com.example.FinalProject.entity.Role;
+import com.example.FinalProject.enums.Role;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;

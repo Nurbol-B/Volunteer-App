@@ -1,5 +1,6 @@
 package com.example.FinalProject.entity;
 
+import com.example.FinalProject.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,6 +1,6 @@
 package com.example.FinalProject.dto;
 
-import com.example.FinalProject.entity.Role;
+import com.example.FinalProject.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

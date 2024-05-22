@@ -1,8 +1,8 @@
 package com.example.FinalProject.service.impl;
 
 import com.example.FinalProject.dto.UserDto;
-import com.example.FinalProject.entity.Role;
 import com.example.FinalProject.entity.User;
+import com.example.FinalProject.enums.Role;
 import com.example.FinalProject.exception.NotFoundException;
 import com.example.FinalProject.mapper.UserMapper;
 import com.example.FinalProject.repository.UserRepository;

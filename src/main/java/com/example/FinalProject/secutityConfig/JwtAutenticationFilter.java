@@ -1,6 +1,5 @@
-package com.example.FinalProject.config;
+package com.example.FinalProject.secutityConfig;
 
-import com.example.FinalProject.config.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

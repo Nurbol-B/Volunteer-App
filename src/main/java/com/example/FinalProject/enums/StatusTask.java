@@ -7,8 +7,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum StatusTask {
     COMPLETED("Выполнена"),
-    CANCELED("Отменена"),
-    IN_PROGRESS("В процессе")
+    IN_PROGRESS("В процессе"),
+    PENDING("В ожидании"),
+    CANCELED("Отменена")
     ;
-    String DESCRIPTION;
+    final String DESCRIPTION;
 }

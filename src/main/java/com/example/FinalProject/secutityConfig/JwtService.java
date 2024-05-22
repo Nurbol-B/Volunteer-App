@@ -1,4 +1,4 @@
-package com.example.FinalProject.config;
+package com.example.FinalProject.secutityConfig;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
