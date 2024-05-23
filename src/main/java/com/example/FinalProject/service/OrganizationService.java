@@ -1,8 +1,6 @@
 package com.example.FinalProject.service;
 
 import com.example.FinalProject.dto.OrganizationDto;
-import com.example.FinalProject.dto.SocialTaskDto;
-import com.example.FinalProject.entity.SocialTask;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +12,6 @@ public interface OrganizationService {
     OrganizationDto createOrganization(OrganizationDto organizationDto);
     void deleteById(Long id);
     OrganizationDto updateOrganization(Long organizationId, OrganizationDto organizationDto);
-    List<SocialTaskDto> findTasksByOrganization(Long organizationId);
+    void findTasksByOrganization(Long organizationId);
 
 }

@@ -13,7 +13,7 @@ public interface SocialTaskService {
     SocialTaskDto createSocialTask(SocialTaskDto socialTaskDto);
     void deleteById(Long id);
     void changeTaskStatus(Long taskId, StatusTask statusTask);
-    List<SocialTaskDto> getOrganizationTasks(Long organizationId);
+    void getOrganizationTasks(Long organizationId);
     SocialTaskDto assignTaskToUser(Long taskId, Long userId);
     SocialTaskDto completeTask(Long taskId);
     List<SocialTaskDto> getTasksByUser(Long userId);

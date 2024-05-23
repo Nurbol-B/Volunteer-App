@@ -36,29 +36,22 @@ public class SocialTaskServiceImpl implements SocialTaskService {
     @Override
     public SocialTaskDto findById(Long id) {
         SocialTask socialTask = socialTaskRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Social task not found with id " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Задача с id " + id + " не найден"));
         return socialTaskMapper.toDto(socialTask);
     }
 
     @Override
     public SocialTaskDto createSocialTask(SocialTaskDto socialTaskDto) {
-//        Long organizationId = socialTaskDto.getOrganizationId();
-//        socialTaskDto.setOrganizationId(organizationId);
-//        return socialTaskMapper.toDto(socialTaskRepository.save(socialTaskMapper.toEntity(socialTaskDto)));
         Long organizationId = socialTaskDto.getOrganizationId();
 
-        // Получаем объект Organization по organizationId
         Organization organization = organizationRepository.findById(organizationId)
                 .orElseThrow(() -> new RuntimeException("Организация с id " + organizationId + " не найдена"));
 
-        // Создаем новый SocialTask и устанавливаем связь с Organization
         SocialTask socialTask = socialTaskMapper.toEntity(socialTaskDto);
         socialTask.setOrganization(organization);
 
-        // Сохраняем SocialTask в базу данных
         SocialTask savedSocialTask = socialTaskRepository.save(socialTask);
 
-        // Преобразуем сохраненный SocialTask обратно в DTO и возвращаем его
         return socialTaskMapper.toDto(savedSocialTask);
     }
 
@@ -75,9 +68,9 @@ public class SocialTaskServiceImpl implements SocialTaskService {
         socialTaskRepository.save(socialTask);
     }
     @Override
-    public List<SocialTaskDto> getOrganizationTasks(Long organizationId) {
+    public void getOrganizationTasks(Long organizationId) {
         List<SocialTask> tasks = socialTaskRepository.findByOrganizationId(organizationId);
-        return tasks.stream().map(socialTaskMapper::toDto).collect(Collectors.toList());
+        tasks.stream().map(socialTaskMapper::toDto).collect(Collectors.toList());
     }
     public SocialTaskDto assignTaskToUser(Long taskId, Long userId) {
         Optional<SocialTask> taskOpt = socialTaskRepository.findById(taskId);
@@ -100,16 +93,12 @@ public class SocialTaskServiceImpl implements SocialTaskService {
                 if (assignedUser != null) {
                     BigDecimal bonus = task.getBonusForExecution();
                     if (bonus != null && bonus.compareTo(BigDecimal.ZERO) > 0) {
-                        // Увеличиваем баланс пользователя
                         BigDecimal currentBalance = assignedUser.getBalance() != null ? assignedUser.getBalance() : BigDecimal.ZERO;
                         assignedUser.setBalance(currentBalance.add(bonus));
-                        // Обнуляем бонус задачи
                         task.setBonusForExecution(BigDecimal.ZERO);
-                        // Сохраняем изменения пользователя
                         userRepository.save(assignedUser);
                     }
                 }
-                // Обновляем статус задачи на "COMPLETED"
                 task.setStatusTask(StatusTask.COMPLETED);
                 return socialTaskMapper.toDto(socialTaskRepository.save(task));
             }

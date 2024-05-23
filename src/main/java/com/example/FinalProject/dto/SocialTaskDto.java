@@ -12,7 +12,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SocialTaskDto {
-
     private Long id;
     private String title;
     private String description;
@@ -20,4 +19,6 @@ public class SocialTaskDto {
     private LocalDate deadline;
     private StatusTask statusTask;
     private Long organizationId;
+    private Long userId;
+
 }
