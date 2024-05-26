@@ -1,8 +1,10 @@
 package com.example.FinalProject.auth;
 
+import com.example.FinalProject.exception.EmailNotConfirmedException;
 import com.example.FinalProject.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +26,15 @@ public class AuthenticationController {
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest authenticationRequest) {
-        return ResponseEntity.ok(authenticationService.authenticate(authenticationRequest));
+    public ResponseEntity<?> authenticate(@RequestBody AuthenticationRequest authenticationRequest) {
+        try {
+            AuthenticationResponse response = authenticationService.authenticate(authenticationRequest);
+            return ResponseEntity.ok().body(response);
+        } catch (EmailNotConfirmedException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Электронная почта не подтверждена. Пожалуйста, подтвердите вашу электронную почту.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Ошибка аутентификации: " + e.getMessage());
+        }
     }
 
     @PutMapping("/confirm")

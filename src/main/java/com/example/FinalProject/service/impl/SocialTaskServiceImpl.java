@@ -6,6 +6,7 @@ import com.example.FinalProject.entity.SocialTask;
 import com.example.FinalProject.entity.User;
 import com.example.FinalProject.enums.StatusTask;
 import com.example.FinalProject.exception.NotFoundException;
+import com.example.FinalProject.exception.TaskNotInProgressException;
 import com.example.FinalProject.mapper.SocialTaskMapper;
 import com.example.FinalProject.repository.OrganizationRepository;
 import com.example.FinalProject.repository.SocialTaskRepository;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -88,7 +90,7 @@ public class SocialTaskServiceImpl implements SocialTaskService {
         Optional<SocialTask> taskOpt = socialTaskRepository.findById(taskId);
         if (taskOpt.isPresent()) {
             SocialTask task = taskOpt.get();
-            if (task.getStatusTask() != StatusTask.COMPLETED) {
+            if (task.getStatusTask() == StatusTask.IN_PROGRESS) {
                 User assignedUser = task.getAssignedUser();
                 if (assignedUser != null) {
                     BigDecimal bonus = task.getBonusForExecution();
@@ -101,9 +103,12 @@ public class SocialTaskServiceImpl implements SocialTaskService {
                 }
                 task.setStatusTask(StatusTask.COMPLETED);
                 return socialTaskMapper.toDto(socialTaskRepository.save(task));
+            } else {
+                throw new TaskNotInProgressException("Задача должна быть в статусе 'IN_PROGRESS', чтобы быть выполненной.");
             }
+        } else {
+            throw new NoSuchElementException("Задача с id " + taskId + " не найдена.");
         }
-        return null;
     }
 
     public List<SocialTaskDto> getTasksByUser(Long userId) {
