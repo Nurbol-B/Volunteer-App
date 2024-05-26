@@ -6,6 +6,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Date;
 
 @Data
 @Entity
@@ -27,5 +28,7 @@ public class SocialTask {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User assignedUser;
+    private Date removeDate;
+
 }
 

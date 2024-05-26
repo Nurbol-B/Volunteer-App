@@ -46,7 +46,7 @@ public AuthenticationResponse register(RegisterRequest registerRequest) {
 }
 
     public AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest) {
-        User user = userRepository.findByEmail(authenticationRequest.getEmail())
+        User user = userRepository.findByEmailAndRemoveDateIsNull(authenticationRequest.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь с почтой " + authenticationRequest.getEmail() + " не найден" ));
 
         if (user.getUserStatus() != UserStatus.CONFIRM) {
@@ -56,7 +56,7 @@ public AuthenticationResponse register(RegisterRequest registerRequest) {
                 authenticationRequest.getEmail(),
                 authenticationRequest.getPassword())
         );
-        user = userRepository.findByEmail(authenticationRequest.getEmail()).orElseThrow();
+        user = userRepository.findByEmailAndRemoveDateIsNull(authenticationRequest.getEmail()).orElseThrow();
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
                 .token(jwtToken)

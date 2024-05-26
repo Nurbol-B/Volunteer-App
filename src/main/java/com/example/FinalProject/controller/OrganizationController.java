@@ -52,8 +52,8 @@ public class OrganizationController {
             return ResponseEntity.notFound().build();
         }
     }
-    @GetMapping("/tasks")
-    public ResponseEntity<SocialTaskDto> getTasksByOrganization(@RequestParam Long organizationId){
+    @GetMapping("/tasks/{organizationId}")
+    public ResponseEntity<SocialTaskDto> getTasksByOrganization(@PathVariable Long organizationId){
         organizationService.findTasksByOrganization(organizationId);
         return ResponseEntity.ok().build();
 

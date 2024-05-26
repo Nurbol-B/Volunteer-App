@@ -1,6 +1,8 @@
 package com.example.FinalProject.controller;
 
+import com.example.FinalProject.dto.OrganizationDetailsDto;
 import com.example.FinalProject.dto.SocialTaskDto;
+import com.example.FinalProject.dto.UserDetailsDto;
 import com.example.FinalProject.enums.StatusTask;
 import com.example.FinalProject.service.SocialTaskService;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SocialTaskController {
     private final SocialTaskService socialTaskService;
+
     @GetMapping("/all")
     public ResponseEntity<List<SocialTaskDto>> getAllSocialTask() {
         List<SocialTaskDto> socialTaskDtos = socialTaskService.getAll();
@@ -44,7 +47,7 @@ public class SocialTaskController {
     }
     @PutMapping("/status")
     public ResponseEntity<Void> changeTaskStatus(@RequestParam Long taskId,
-                                                 @RequestParam StatusTask statusTask){
+                                                 @RequestParam StatusTask statusTask) {
         socialTaskService.changeTaskStatus(taskId, statusTask);
         return ResponseEntity.ok().build();
     }
@@ -75,5 +78,34 @@ public class SocialTaskController {
     public ResponseEntity<List<SocialTaskDto>> getTasksByUser(@PathVariable Long userId) {
         List<SocialTaskDto> tasks = socialTaskService.getTasksByUser(userId);
         return ResponseEntity.ok(tasks);
+    }
+
+    @PutMapping("/cancel/{taskId}")
+    public ResponseEntity<SocialTaskDto> cancelSocialTask(@PathVariable Long taskId) {
+        SocialTaskDto task = socialTaskService.cancelSocialTask(taskId);
+        if (task != null) {
+            return ResponseEntity.ok(task);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    @PutMapping("/unAssignUser/{taskId}/user/{userId}")
+    public ResponseEntity<SocialTaskDto> unAssignUser(@PathVariable Long taskId,@PathVariable Long userId){
+       SocialTaskDto task = socialTaskService.unAssignUser(taskId,userId);
+        if (task != null) {
+            return ResponseEntity.ok(task);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    @GetMapping("/{taskId}/assignedUserDetails")
+    public ResponseEntity<UserDetailsDto> getAssignedUserDetails(@PathVariable Long taskId) {
+        UserDetailsDto userDetailsDto = socialTaskService.getAssignedUserDetails(taskId);
+        return ResponseEntity.ok(userDetailsDto);
+    }
+    @GetMapping("/{taskId}/organizationDetails")
+    public ResponseEntity<OrganizationDetailsDto> getOrganizationDetails(@PathVariable Long taskId) {
+        OrganizationDetailsDto organizationDetailsDto = socialTaskService.getOrganizationDetails(taskId);
+        return ResponseEntity.ok(organizationDetailsDto);
     }
 }

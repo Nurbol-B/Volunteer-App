@@ -1,17 +1,22 @@
 package com.example.FinalProject.service.impl;
 
 import com.example.FinalProject.dto.OrganizationDto;
+import com.example.FinalProject.dto.SocialTaskDto;
 import com.example.FinalProject.entity.Organization;
+import com.example.FinalProject.entity.SocialTask;
 import com.example.FinalProject.exception.NotFoundException;
 import com.example.FinalProject.mapper.OrganizationMapper;
 import com.example.FinalProject.mapper.SocialTaskMapper;
 import com.example.FinalProject.repository.OrganizationRepository;
+import com.example.FinalProject.repository.SocialTaskRepository;
 import com.example.FinalProject.service.OrganizationService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,18 +25,19 @@ public class OrganizationServiceImpl implements OrganizationService {
     private final OrganizationRepository organizationRepository;
     private final OrganizationMapper organizationMapper;
     private final SocialTaskMapper socialTaskMapper;
+    private final SocialTaskRepository socialTaskRepository;
 
 
     @Override
     public List<OrganizationDto> getAll() {
-        List<Organization> organizations = organizationRepository.findAll();
+        List<Organization> organizations = organizationRepository.findAllByRemoveDateIsNull();
         return organizationMapper.toDtoList(organizations);
     }
 
     @Override
     public OrganizationDto findById(Long id) {
-        Organization organization = organizationRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Организция с id " + id + " не найден"));
+        Organization organization = organizationRepository.findByIdAndRemoveDateIsNull(id)
+                .orElseThrow(() -> new EntityNotFoundException("Организация с id " + id + " не найден"));
         return organizationMapper.toDto(organization);
     }
 
@@ -42,9 +48,16 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
-    public void deleteById(Long id) {
-        organizationRepository.deleteById(id);
+    public String deleteById(Long id) {
+        Optional<Organization> optionalOrganization = organizationRepository.findByIdAndRemoveDateIsNull(id);
+        if(optionalOrganization.isPresent()) {
+            Organization organization = optionalOrganization.get();
+            organization.setRemoveDate(new Date(System.currentTimeMillis()));
+            organizationRepository.save(organization);
+            return "Deleted";
+        }else throw new NullPointerException(String.format("Организация с id %s не найдена", id));
     }
+
     @Override
     public OrganizationDto updateOrganization(Long organizationId, OrganizationDto organizationDto) {
         Organization organization = organizationRepository.findById(organizationId)
@@ -66,4 +79,7 @@ public class OrganizationServiceImpl implements OrganizationService {
                 .map(socialTaskMapper::toDto)
                 .collect(Collectors.toList());
     }
+
+
+
 }

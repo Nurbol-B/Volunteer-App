@@ -19,7 +19,9 @@ public class Organization {
     private Long id;
     private String name;
     private String contact;
+    private String address;
     @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL,fetch = EAGER)
     private List<SocialTask> socialTasks;
+    private Date removeDate;
 
 }

@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -34,6 +35,7 @@ public class User implements UserDetails {
     private List<CodeConfirm> codeConfirms = new ArrayList<>();
     @Enumerated(value = EnumType.STRING)
     private UserStatus userStatus;
+    private Date removeDate;
 
     public User(String username) {
     }

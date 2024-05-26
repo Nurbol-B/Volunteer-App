@@ -1,13 +1,18 @@
 package com.example.FinalProject.service.impl;
 
 import com.example.FinalProject.auth.RegisterRequest;
+import com.example.FinalProject.dto.OrganizationDto;
+import com.example.FinalProject.dto.UserDetailsDto;
 import com.example.FinalProject.dto.UserDto;
 import com.example.FinalProject.entity.CodeConfirm;
+import com.example.FinalProject.entity.Organization;
+import com.example.FinalProject.entity.SocialTask;
 import com.example.FinalProject.entity.User;
 import com.example.FinalProject.enums.CodeStatus;
 import com.example.FinalProject.enums.Role;
 import com.example.FinalProject.enums.UserStatus;
 import com.example.FinalProject.exception.NotFoundException;
+import com.example.FinalProject.mapper.UserDetailsMapper;
 import com.example.FinalProject.mapper.UserMapper;
 import com.example.FinalProject.repository.CodeConfirmRepository;
 import com.example.FinalProject.repository.UserRepository;
@@ -21,7 +26,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -31,17 +38,18 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final CodeConfirmRepository codeConfirmRepository;
     private final JavaMailSender mailSender;
+    private final UserDetailsMapper userDetailsMapper;
 
 
     @Override
     public List<UserDto> getAll() {
-        List<User> users = userRepository.findAll();
+        List<User> users = userRepository.findAllByRemoveDateIsNull();
         return userMapper.toDtoList(users);
     }
 
     @Override
     public UserDto findById(Long id) {
-        User user = userRepository.findById(id)
+        User user = userRepository.findByIdAndRemoveDateIsNull(id)
                 .orElseThrow(() -> new EntityNotFoundException("Пользователь не найден с " + id));
         return userMapper.toDto(user);
     }
@@ -54,14 +62,28 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteById(Long id) {
-        userRepository.deleteById(id);
+    public String deleteById(Long id) {
+        Optional<User> optionalUser = userRepository.findByIdAndRemoveDateIsNull(id);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            user.setRemoveDate(new Date(System.currentTimeMillis()));
+            userRepository.save(user);
+            return "Deleted";
+        } else throw new NullPointerException(String.format("Пользователь с id %s не найдена", id));
+    }
+
+    @Override
+    public UserDto updateUser(Long userId, UserDetailsDto updatedUserDto) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("Пользователь с id " + userId + " не найдено"));
+        userDetailsMapper.updateUserFromDto(user, updatedUserDto);
+        return userMapper.toDto(userRepository.save(user));
     }
 
     @Override
     public BigDecimal getBalanceByUsername(String username) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new NotFoundException("Пользователь с именем " + username + "не найден"));
+        User user = userRepository.findByUsernameAndRemoveDateIsNull(username)
+                .orElseThrow(()->new NotFoundException("Пользователь с именем " + username + "не найден"));
         return user.getBalance();
     }
 

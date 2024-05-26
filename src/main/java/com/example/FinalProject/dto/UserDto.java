@@ -5,8 +5,10 @@ import com.example.FinalProject.enums.UserStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -20,5 +22,6 @@ public class UserDto {
     private BigDecimal balance;
     private Role role;
     private UserStatus status;
+    private Date removeDate;
 
 }

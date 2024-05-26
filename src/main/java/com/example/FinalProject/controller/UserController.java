@@ -1,5 +1,6 @@
 package com.example.FinalProject.controller;
 
+import com.example.FinalProject.dto.UserDetailsDto;
 import com.example.FinalProject.dto.UserDto;
 import com.example.FinalProject.enums.Role;
 import com.example.FinalProject.service.UserService;
@@ -70,6 +71,15 @@ public class UserController {
         } catch (Exception e) {
 //            logger.error("Error changing role of user with id {}", id, e);
             return ResponseEntity.status(500).build();
+        }
+    }
+    @PutMapping("/updateProfile/{userId}")
+    public ResponseEntity<String> updateProfile(@PathVariable Long userId, @RequestBody UserDetailsDto updatedUserDto) {
+        try {
+            userService.updateUser(userId,updatedUserDto);
+            return ResponseEntity.ok("Профиль пользователя успешно обновлен");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Не удалось обновить профиль пользователя: " + e.getMessage());
         }
     }
 }
