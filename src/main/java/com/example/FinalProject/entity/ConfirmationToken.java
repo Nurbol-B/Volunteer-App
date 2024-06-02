@@ -1,6 +1,9 @@
 package com.example.FinalProject.entity;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 
 @Data
@@ -19,6 +22,7 @@ public class ConfirmationToken {
     private String confirmationToken;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date createdDate;
 
     public Long getTokenId() {
