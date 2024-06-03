@@ -52,10 +52,10 @@ public class OrganizationController {
             return ResponseEntity.notFound().build();
         }
     }
-    @GetMapping("/tasks/{organizationId}")
-    public ResponseEntity<SocialTaskDto> getTasksByOrganization(@PathVariable Long organizationId){
-        organizationService.findTasksByOrganization(organizationId);
-        return ResponseEntity.ok().build();
-
+    @GetMapping("/{organizationId}/tasks")
+    public ResponseEntity<List<SocialTaskDto>> listAllTasks(@PathVariable Long organizationId) {
+        List<SocialTaskDto> tasks = organizationService.listAllTasks(organizationId);
+        return ResponseEntity.ok(tasks);
     }
+
 }

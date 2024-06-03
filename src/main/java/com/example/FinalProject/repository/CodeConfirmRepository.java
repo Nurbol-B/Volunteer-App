@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CodeConfirmRepository extends JpaRepository<CodeConfirm, Long> {
-        CodeConfirm findByCode(Long code);
-    }
+    CodeConfirm findByCode(Long code);
+}

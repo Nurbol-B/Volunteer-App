@@ -74,11 +74,6 @@ public class SocialTaskController {
             return ResponseEntity.notFound().build();
         }
     }
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<SocialTaskDto>> getTasksByUser(@PathVariable Long userId) {
-        List<SocialTaskDto> tasks = socialTaskService.getTasksByUser(userId);
-        return ResponseEntity.ok(tasks);
-    }
 
     @PutMapping("/cancel/{taskId}")
     public ResponseEntity<SocialTaskDto> cancelSocialTask(@PathVariable Long taskId) {
@@ -107,5 +102,10 @@ public class SocialTaskController {
     public ResponseEntity<OrganizationDetailsDto> getOrganizationDetails(@PathVariable Long taskId) {
         OrganizationDetailsDto organizationDetailsDto = socialTaskService.getOrganizationDetails(taskId);
         return ResponseEntity.ok(organizationDetailsDto);
+    }
+    @GetMapping("/assigned")
+    public ResponseEntity<List<SocialTaskDto>> listAssignedTasks(@RequestParam Long userId) {
+        List<SocialTaskDto> tasks = socialTaskService.listAssignedTasks(userId);
+        return ResponseEntity.ok(tasks);
     }
 }

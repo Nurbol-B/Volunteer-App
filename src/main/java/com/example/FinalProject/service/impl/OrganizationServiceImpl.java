@@ -50,36 +50,34 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public String deleteById(Long id) {
         Optional<Organization> optionalOrganization = organizationRepository.findByIdAndRemoveDateIsNull(id);
-        if(optionalOrganization.isPresent()) {
+        if (optionalOrganization.isPresent()) {
             Organization organization = optionalOrganization.get();
             organization.setRemoveDate(new Date(System.currentTimeMillis()));
             organizationRepository.save(organization);
             return "Deleted";
-        }else throw new NullPointerException(String.format("Организация с id %s не найдена", id));
+        } else throw new NullPointerException(String.format("Организация с id %s не найдена", id));
     }
 
     @Override
     public OrganizationDto updateOrganization(Long organizationId, OrganizationDto organizationDto) {
         Organization organization = organizationRepository.findById(organizationId)
-                .orElseThrow(()->new NotFoundException("Организация с id " + organizationId +" не найдено"));
+                .orElseThrow(() -> new NotFoundException("Организация с id " + organizationId + " не найдено"));
 
         organization.setName(organizationDto.getName());
         organization.setContact(organizationDto.getContact());
 
         Organization updatedOrganization = organizationRepository.save(organization);
-            return organizationMapper.toDto(updatedOrganization);
+        return organizationMapper.toDto(updatedOrganization);
 
     }
-    @Override
-    public void findTasksByOrganization(Long organizationId) {
-        Organization organization = organizationRepository.findById(organizationId)
-                .orElseThrow(() -> new EntityNotFoundException("Организация с id " + organizationId + " не найден"));
 
-        organization.getSocialTasks().stream()
+    @Override
+    public List<SocialTaskDto> listAllTasks(Long organizationId) {
+        Organization organization = organizationRepository.findById(organizationId)
+                .orElseThrow(() -> new EntityNotFoundException("Организация с id " + organizationId + " не найдена"));
+
+        return organization.getSocialTasks().stream()
                 .map(socialTaskMapper::toDto)
                 .collect(Collectors.toList());
     }
-
-
-
 }

@@ -13,6 +13,5 @@ public interface OrganizationService {
     OrganizationDto createOrganization(OrganizationDto organizationDto);
     String deleteById(Long id);
     OrganizationDto updateOrganization(Long organizationId, OrganizationDto organizationDto);
-    void findTasksByOrganization(Long organizationId);
-
+    List<SocialTaskDto> listAllTasks(Long organizationId);
 }

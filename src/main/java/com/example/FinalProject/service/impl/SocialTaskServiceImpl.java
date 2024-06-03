@@ -130,10 +130,6 @@ public class SocialTaskServiceImpl implements SocialTaskService {
         }
     }
 
-    public List<SocialTaskDto> getTasksByUser(Long userId) {
-        return socialTaskMapper.toDtoList(socialTaskRepository.findByAssignedUserIdAndRemoveDateIsNull(userId));
-    }
-
     @Override
     public SocialTaskDto cancelSocialTask(Long taskId) {
         Optional<SocialTask> taskOpt = socialTaskRepository.findById(taskId);
@@ -188,5 +184,12 @@ public class SocialTaskServiceImpl implements SocialTaskService {
             throw new EntityNotFoundException("Организация для задачи социальной сети с id " + taskId + " не найдена");
         }
         return organizationDetailsMapper.toDto(organization);
+    }
+    @Override
+    public List<SocialTaskDto> listAssignedTasks(Long userId) {
+        List<SocialTask> tasks = socialTaskRepository.findByAssignedUserIdAndRemoveDateIsNull(userId);
+        return tasks.stream()
+                .map(socialTaskMapper::toDto)
+                .collect(Collectors.toList());
     }
 }

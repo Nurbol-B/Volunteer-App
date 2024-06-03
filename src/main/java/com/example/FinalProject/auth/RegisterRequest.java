@@ -1,5 +1,6 @@
 package com.example.FinalProject.auth;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -20,6 +21,7 @@ public class RegisterRequest {
     private String bio;
     private BigDecimal balance;
     @NotNull(message = "Email не может быть пустым")
+    @Email
     private String email;
     @Size(min = 6,message = "Пароль не может быть меньше 6 символов")
     private String password;

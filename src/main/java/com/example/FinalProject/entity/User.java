@@ -3,6 +3,8 @@ package com.example.FinalProject.entity;
 import com.example.FinalProject.enums.Role;
 import com.example.FinalProject.enums.UserStatus;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

@@ -19,10 +19,9 @@ public interface SocialTaskService {
     void getOrganizationTasks(Long organizationId);
     SocialTaskDto assignTaskToUser(Long taskId, Long userId);
     SocialTaskDto completeTask(Long taskId);
-    List<SocialTaskDto> getTasksByUser(Long userId);
     SocialTaskDto cancelSocialTask(Long taskId);
     SocialTaskDto unAssignUser(Long taskId, Long userId);
     UserDetailsDto getAssignedUserDetails(Long userId);
     OrganizationDetailsDto getOrganizationDetails(Long taskId);
-
-    }
+    List<SocialTaskDto> listAssignedTasks(Long userId);
+}
