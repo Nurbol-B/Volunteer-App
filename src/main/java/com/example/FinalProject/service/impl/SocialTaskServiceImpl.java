@@ -39,7 +39,7 @@ public class SocialTaskServiceImpl implements SocialTaskService {
     private final UserRepository userRepository;
     private final UserDetailsMapper userDetailsMapper;
     private final OrganizationDetailsMapper organizationDetailsMapper;
-//    private final BonusHistoryService bonusHistoryService;
+    private final BonusHistoryService bonusHistoryService;
     @Override
     public List<SocialTaskDto> getAll() {
         return socialTaskMapper.toDtoList(socialTaskRepository.findAllByRemoveDateIsNull());
@@ -120,7 +120,7 @@ public class SocialTaskServiceImpl implements SocialTaskService {
                         BigDecimal newBalance = currentBalance.add(bonus);
                         assignedUser.setBalance(newBalance);
                         task.setBonusForExecution(BigDecimal.ZERO);
-//                        bonusHistoryService.addBonusHistory(assignedUser.getId(), bonus, currentBalance, newBalance, "Task completed: " + task.getTitle());
+                        bonusHistoryService.addBonusHistory(assignedUser.getId(), bonus, currentBalance, newBalance, "Task completed: " + task.getTitle());
 
                         userRepository.save(assignedUser);
                     }
