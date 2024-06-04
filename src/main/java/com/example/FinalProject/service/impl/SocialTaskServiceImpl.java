@@ -16,6 +16,7 @@ import com.example.FinalProject.mapper.UserDetailsMapper;
 import com.example.FinalProject.repository.OrganizationRepository;
 import com.example.FinalProject.repository.SocialTaskRepository;
 import com.example.FinalProject.repository.UserRepository;
+import com.example.FinalProject.service.BonusHistoryService;
 import com.example.FinalProject.service.SocialTaskService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +39,7 @@ public class SocialTaskServiceImpl implements SocialTaskService {
     private final UserRepository userRepository;
     private final UserDetailsMapper userDetailsMapper;
     private final OrganizationDetailsMapper organizationDetailsMapper;
+    private final BonusHistoryService bonusHistoryService;
     @Override
     public List<SocialTaskDto> getAll() {
         return socialTaskMapper.toDtoList(socialTaskRepository.findAllByRemoveDateIsNull());
@@ -115,8 +117,11 @@ public class SocialTaskServiceImpl implements SocialTaskService {
                     BigDecimal bonus = task.getBonusForExecution();
                     if (bonus != null && bonus.compareTo(BigDecimal.ZERO) > 0) {
                         BigDecimal currentBalance = assignedUser.getBalance() != null ? assignedUser.getBalance() : BigDecimal.ZERO;
-                        assignedUser.setBalance(currentBalance.add(bonus));
+                        BigDecimal newBalance = currentBalance.add(bonus);
+                        assignedUser.setBalance(newBalance);
                         task.setBonusForExecution(BigDecimal.ZERO);
+                        bonusHistoryService.addBonusHistory(assignedUser.getId(), bonus, currentBalance, newBalance, "Task completed: " + task.getTitle());
+
                         userRepository.save(assignedUser);
                     }
                 }

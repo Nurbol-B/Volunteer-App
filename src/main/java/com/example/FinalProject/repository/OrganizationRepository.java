@@ -12,6 +12,4 @@ import java.util.Optional;
 public interface OrganizationRepository extends JpaRepository <Organization, Long > {
     Optional<Organization> findByIdAndRemoveDateIsNull(Long id);
     List<Organization> findAllByRemoveDateIsNull();
-
-
-    }
+}
