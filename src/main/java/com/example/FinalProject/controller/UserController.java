@@ -82,4 +82,14 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Не удалось обновить профиль пользователя: " + e.getMessage());
         }
     }
+    @GetMapping("/balance/greater-than")
+    public ResponseEntity<List<UserDto>> getUsersWithBalanceGreaterThan(@RequestParam BigDecimal amount) {
+        return ResponseEntity.ok(userService.getUsersWithBalanceGreaterThan(amount));
+    }
+    @PostMapping("/transfer")
+    public ResponseEntity<Void> transferBalance(@RequestParam Long fromUserId, @RequestParam Long toUserId,
+                                                @RequestParam BigDecimal amount) {
+        userService.transferBalance(fromUserId, toUserId, amount);
+        return ResponseEntity.ok().build();
+    }
 }

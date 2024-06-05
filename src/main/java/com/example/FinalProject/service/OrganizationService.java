@@ -2,6 +2,7 @@ package com.example.FinalProject.service;
 
 import com.example.FinalProject.dto.OrganizationDto;
 import com.example.FinalProject.dto.SocialTaskDto;
+import com.example.FinalProject.enums.StatusTask;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,4 +15,6 @@ public interface OrganizationService {
     String deleteById(Long id);
     OrganizationDto updateOrganization(Long organizationId, OrganizationDto organizationDto);
     List<SocialTaskDto> listAllTasks(Long organizationId);
+    List<SocialTaskDto> getTasksByStatus(Long organizationId, StatusTask status);
+
 }

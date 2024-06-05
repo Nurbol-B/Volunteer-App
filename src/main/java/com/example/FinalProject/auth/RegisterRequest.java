@@ -1,6 +1,7 @@
 package com.example.FinalProject.auth;
 
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -15,14 +16,14 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RegisterRequest {
-    @NotNull(message = "Failed")
+    @NotBlank(message = "Имя пользователя не может быть пустым")
+    @Size(max = 255, message = "Имя пользователя не может превышать 255 символов")
     private String username;
-    @NotNull(message = "Failed")
+    @Size(max = 255, message = "Информация о себе не может превышать 255 символов")
     private String bio;
-    private BigDecimal balance;
-    @NotNull(message = "Email не может быть пустым")
-    @Email
+    @Email(message = "Эл. почта не валиден")
     private String email;
-    @Size(min = 6,message = "Пароль не может быть меньше 6 символов")
+    @Size(min = 6 ,message = "Пароль должен содержать не более 6 символов")
+    @Size(max =255, message = "Пароль не может превышать 255 символов")
     private String password;
 }

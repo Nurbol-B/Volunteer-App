@@ -1,26 +1,21 @@
 package com.example.FinalProject.service.impl;
-
-import com.example.FinalProject.auth.RegisterRequest;
-import com.example.FinalProject.dto.OrganizationDto;
 import com.example.FinalProject.dto.UserDetailsDto;
 import com.example.FinalProject.dto.UserDto;
 import com.example.FinalProject.entity.CodeConfirm;
-import com.example.FinalProject.entity.Organization;
-import com.example.FinalProject.entity.SocialTask;
 import com.example.FinalProject.entity.User;
 import com.example.FinalProject.enums.CodeStatus;
 import com.example.FinalProject.enums.Role;
 import com.example.FinalProject.enums.UserStatus;
+import com.example.FinalProject.exception.InsufficientBalanceException;
 import com.example.FinalProject.exception.NotFoundException;
 import com.example.FinalProject.mapper.UserDetailsMapper;
 import com.example.FinalProject.mapper.UserMapper;
 import com.example.FinalProject.repository.CodeConfirmRepository;
 import com.example.FinalProject.repository.UserRepository;
+import com.example.FinalProject.service.BonusHistoryService;
 import com.example.FinalProject.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -41,6 +36,7 @@ public class UserServiceImpl implements UserService {
     private final CodeConfirmRepository codeConfirmRepository;
     private final JavaMailSender mailSender;
     private final UserDetailsMapper userDetailsMapper;
+    private final BonusHistoryService bonusHistoryService;
 
 
     @Override
@@ -81,6 +77,7 @@ public class UserServiceImpl implements UserService {
         userDetailsMapper.updateUserFromDto(user, updatedUserDto);
         return userMapper.toDto(userRepository.save(user));
     }
+
 
     @Override
     public BigDecimal getBalanceByUsername(String username) {
@@ -132,5 +129,33 @@ public class UserServiceImpl implements UserService {
 
     private Long generateVerificationCode() {
         return (long) (Math.random() * 1000000);
+    }
+
+    @Override
+    public void transferBalance(Long fromUserId, Long toUserId, BigDecimal amount) {
+        User fromUser = userRepository.findById(fromUserId)
+                .orElseThrow(() -> new EntityNotFoundException("Пользователь с id " + fromUserId + " не найден"));
+        User toUser = userRepository.findById(toUserId)
+                .orElseThrow(() -> new EntityNotFoundException("Пользователь с id " + toUserId + " не найден"));
+
+        BigDecimal fromUserBalance = fromUser.getBalance();
+        BigDecimal toUserBalance = toUser.getBalance();
+
+        if (fromUserBalance.compareTo(amount) < 0) {
+            throw new InsufficientBalanceException("Недостаточно средств для перевода.");
+        }
+
+        fromUser.setBalance(fromUserBalance.subtract(amount));
+        toUser.setBalance(toUserBalance.add(amount));
+
+        bonusHistoryService.addBonusHistory(fromUserId, amount.negate(), fromUserBalance, fromUser.getBalance(), "Переведено пользователю: " + toUserId);
+        bonusHistoryService.addBonusHistory(toUserId, amount, toUserBalance, toUser.getBalance(), "Получено от пользователя: " + fromUserId);
+
+        userRepository.save(fromUser);
+        userRepository.save(toUser);
+    }
+    @Override
+    public List<UserDto> getUsersWithBalanceGreaterThan(BigDecimal amount) {
+        return userMapper.toDtoList(userRepository.findByBalanceGreaterThan(amount));
     }
 }

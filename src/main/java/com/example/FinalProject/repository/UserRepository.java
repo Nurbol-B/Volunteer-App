@@ -5,6 +5,7 @@ import com.example.FinalProject.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,4 +19,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByIdAndRemoveDateIsNull(Long id);
     List<User> findAllByRemoveDateIsNull();
 
+    List<User> findByBalanceGreaterThan(BigDecimal amount);
 }

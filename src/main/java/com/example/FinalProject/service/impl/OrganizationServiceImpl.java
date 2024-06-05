@@ -4,6 +4,7 @@ import com.example.FinalProject.dto.OrganizationDto;
 import com.example.FinalProject.dto.SocialTaskDto;
 import com.example.FinalProject.entity.Organization;
 import com.example.FinalProject.entity.SocialTask;
+import com.example.FinalProject.enums.StatusTask;
 import com.example.FinalProject.exception.NotFoundException;
 import com.example.FinalProject.mapper.OrganizationMapper;
 import com.example.FinalProject.mapper.SocialTaskMapper;
@@ -77,6 +78,15 @@ public class OrganizationServiceImpl implements OrganizationService {
                 .orElseThrow(() -> new EntityNotFoundException("Организация с id " + organizationId + " не найдена"));
 
         return organization.getSocialTasks().stream()
+                .map(socialTaskMapper::toDto)
+                .collect(Collectors.toList());
+    }
+    @Override
+    public List<SocialTaskDto> getTasksByStatus(Long organizationId, StatusTask status) {
+        Organization organization = organizationRepository.findById(organizationId)
+                .orElseThrow(() -> new EntityNotFoundException("Организация с id " + organizationId + " не найдена"));
+        return organization.getSocialTasks().stream()
+                .filter(task -> task.getStatusTask() == status)
                 .map(socialTaskMapper::toDto)
                 .collect(Collectors.toList());
     }

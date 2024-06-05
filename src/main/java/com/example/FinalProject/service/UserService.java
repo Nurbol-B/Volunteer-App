@@ -1,7 +1,5 @@
 package com.example.FinalProject.service;
 
-import com.example.FinalProject.auth.RegisterRequest;
-import com.example.FinalProject.dto.OrganizationDto;
 import com.example.FinalProject.dto.UserDetailsDto;
 import com.example.FinalProject.dto.UserDto;
 import com.example.FinalProject.entity.User;
@@ -23,6 +21,6 @@ public interface UserService {
     ResponseEntity<?> confirmEmail(Long code);
     String deleteById(Long id);
     UserDto updateUser(Long userId, UserDetailsDto userDetailsDto);
-
-
+    void transferBalance(Long fromUserId, Long toUserId, BigDecimal amount);
+    List<UserDto> getUsersWithBalanceGreaterThan(BigDecimal amount);
 }

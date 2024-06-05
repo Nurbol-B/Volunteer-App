@@ -2,6 +2,7 @@ package com.example.FinalProject.controller;
 
 import com.example.FinalProject.dto.OrganizationDto;
 import com.example.FinalProject.dto.SocialTaskDto;
+import com.example.FinalProject.enums.StatusTask;
 import com.example.FinalProject.service.OrganizationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -56,6 +57,11 @@ public class OrganizationController {
     public ResponseEntity<List<SocialTaskDto>> listAllTasks(@PathVariable Long organizationId) {
         List<SocialTaskDto> tasks = organizationService.listAllTasks(organizationId);
         return ResponseEntity.ok(tasks);
+    }
+    @GetMapping("/{organizationId}/tasks/status")
+    public ResponseEntity<List<SocialTaskDto>> getTasksByStatus(@PathVariable Long organizationId,
+                                                                @RequestParam StatusTask status) {
+        return ResponseEntity.ok(organizationService.getTasksByStatus(organizationId, status));
     }
 
 }

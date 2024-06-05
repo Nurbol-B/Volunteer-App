@@ -121,7 +121,6 @@ public class SocialTaskServiceImpl implements SocialTaskService {
                         assignedUser.setBalance(newBalance);
                         task.setBonusForExecution(BigDecimal.ZERO);
                         bonusHistoryService.addBonusHistory(assignedUser.getId(), bonus, currentBalance, newBalance, "Task completed: " + task.getTitle());
-
                         userRepository.save(assignedUser);
                     }
                 }

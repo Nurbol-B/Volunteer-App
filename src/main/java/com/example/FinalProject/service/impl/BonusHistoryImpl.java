@@ -38,4 +38,9 @@ public class BonusHistoryImpl implements BonusHistoryService {
                 .map(bonusHistoryMapper::toDto)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<BonusHistoryDto> getBonusHistoryForUserInDateRange(Long userId, LocalDateTime startDate, LocalDateTime endDate) {
+        return bonusHistoryRepository.findByUserIdAndTimestampBetween(userId, startDate, endDate);
+    }
 }
