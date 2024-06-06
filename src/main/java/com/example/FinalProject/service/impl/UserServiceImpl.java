@@ -29,7 +29,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @Service
 @RequiredArgsConstructor
@@ -84,26 +83,29 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public void blockUser(String username, Long id) {
+    public void blockUser(Long id) {
         try {
-            User user = userRepository.findByUsernameAndId(username,id)
-                    .orElseThrow(() -> new NotFoundException("Пользователь с именем " + username + "не найден"));
-            user.setIsBlocked(true);
+            User user = userRepository.findByIdAndRemoveDateIsNull(id)
+                    .orElseThrow(() -> new NotFoundException("Пользователь с id " + id + "не найден"));
             user.setUserStatus(UserStatus.BLOCKED);
             user.setBlockedAt(LocalDateTime.now());
             userRepository.save(user);
         } catch (Exception e) {
-            throw new NotFoundException("ользователь с именем " + username + "не найден");
+            throw new NotFoundException("Пользователь с id " + id + "не найден");
         }
     }
 
     @Override
-    public void unlockUser(Long id,String username) {
-        User user = userRepository.findByUsernameAndRemoveDateIsNull(username)
-                .orElseThrow(() -> new UserNotFoundException("User not found or already unlocked: " + username));
+    public void unlockUser(Long id) {
+        Optional<User> userOptional = userRepository.findByIdAndUserStatus(id,UserStatus.BLOCKED);
 
-        user.setBlocked(false);
-        userRepository.save(user);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            user.setUserStatus(UserStatus.ACTIVE);
+            userRepository.save(user);
+        } else {
+            throw new UserNotFoundException("Пользователь не найден или не заблокирован");
+        }
     }
 
     @Override

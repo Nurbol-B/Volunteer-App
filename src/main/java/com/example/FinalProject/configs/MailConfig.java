@@ -1,4 +1,4 @@
-package com.example.FinalProject.service;
+package com.example.FinalProject.configs;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,7 +34,7 @@ public class MailConfig {
         props.put("mail.transport.protocol", "smtp");
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.debug", "true"); // Установите в false в production
+        props.put("mail.debug", "false"); // Установите в false в production
 
         return mailSender;
     }

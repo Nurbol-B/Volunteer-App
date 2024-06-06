@@ -120,7 +120,7 @@ public class SocialTaskServiceImpl implements SocialTaskService {
                         BigDecimal newBalance = currentBalance.add(bonus);
                         assignedUser.setBalance(newBalance);
                         task.setBonusForExecution(BigDecimal.ZERO);
-                        bonusHistoryService.addBonusHistory(assignedUser.getId(), bonus, currentBalance, newBalance, "Task completed: " + task.getTitle());
+                        bonusHistoryService.addBonusHistory(assignedUser.getId(), bonus, currentBalance, newBalance, "Выполнил задание: " + task.getTitle());
                         userRepository.save(assignedUser);
                     }
                 }
@@ -161,6 +161,7 @@ public class SocialTaskServiceImpl implements SocialTaskService {
         if (task.getAssignedUser() != null && task.getAssignedUser().getId().equals(user.getId())) {
             task.setAssignedUser(null);
             task.setStatusTask(StatusTask.PENDING);
+            bonusHistoryService.addBonusHistory(userId, BigDecimal.ZERO.negate(), task.getAssignedUser().getBalance(), task.getAssignedUser().getBalance(), "Отменено назначение на задачу: " + taskId);
             return socialTaskMapper.toDto(socialTaskRepository.save(task));
         } else {
             throw new IllegalStateException("Задача не назначена пользователю с id " + userId);

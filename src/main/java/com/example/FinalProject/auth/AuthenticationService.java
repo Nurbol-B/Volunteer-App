@@ -23,7 +23,6 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
-//    private final JavaMailSender emailSender;
 
 @Transactional
 public AuthenticationResponse register(RegisterRequest registerRequest) {

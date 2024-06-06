@@ -23,8 +23,6 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
-@Getter
-@Setter
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,9 +46,7 @@ public class User implements UserDetails {
     @Enumerated(value = EnumType.STRING)
     private UserStatus userStatus;
     private Date removeDate;
-    @Column(name = "is_blocked")
-    private Boolean isBlocked = false;
-
+    @Setter
     @Column(name = "blocked_at")
     private LocalDateTime blockedAt;
 
@@ -62,7 +58,6 @@ public class User implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return  List.of(new SimpleGrantedAuthority(role.name()));
     }
-
     @Override
     public String getUsername() {
         return email;
@@ -83,25 +78,10 @@ public class User implements UserDetails {
         return true;
     }
 
-    public void setBlockedAt(LocalDateTime blockedAt) {
-        this.blockedAt = blockedAt;
-    }
-
-    public void setBlocked(Boolean blocked) {
-        isBlocked = blocked;
-    }
-
     @Override
     public boolean isEnabled() {
         return true;
     }
-
-//    public void setBlockedAt(Date date) {
-//
-//    }
-//
-//    public void setBlocked(boolean b) {
-//    }
 
 }
 

@@ -1,6 +1,7 @@
 package com.example.FinalProject.repository;
 
 import com.example.FinalProject.entity.User;
+import com.example.FinalProject.enums.UserStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -16,8 +17,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUsernameAndRemoveDateIsNull(String username);
     Optional<User> findByEmailAndRemoveDateIsNull(String email);
     Optional<User> findByIdAndRemoveDateIsNull(Long id);
+    Optional<User> findByIdAndUserStatus(Long id, UserStatus userStatus);
     List<User> findAllByRemoveDateIsNull();
 
     List<User> findByBalanceGreaterThan(BigDecimal amount);
     Optional<User> findByUsernameAndId(String username, Long id);
+
+    Optional<User> findByUsername(String username);
 }
