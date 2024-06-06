@@ -76,10 +76,21 @@ public class UserController {
     @PutMapping("/updateProfile/{userId}")
     public ResponseEntity<String> updateProfile(@PathVariable Long userId, @RequestBody UserDetailsDto updatedUserDto) {
         try {
-            userService.updateUser(userId,updatedUserDto);
+            userService.updateUser(userId, updatedUserDto);
             return ResponseEntity.ok("Профиль пользователя успешно обновлен");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Не удалось обновить профиль пользователя: " + e.getMessage());
         }
     }
-}
+        @PutMapping("/block/{id}/{username}")
+        public ResponseEntity<Void> blockUser(@PathVariable Long id, @PathVariable String username) {
+            userService.blockUser(username, id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+
+        @PutMapping("/unBlock/{id}")
+        public ResponseEntity<Void> unblockUser(@PathVariable Long id, @RequestBody String username) {
+            userService.unlockUser(id, username);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+    }
