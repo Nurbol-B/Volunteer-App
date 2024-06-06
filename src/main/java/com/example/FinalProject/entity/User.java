@@ -11,6 +11,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -22,17 +23,22 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
+@Getter
+@Setter
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Pattern(regexp = "^([a-zA-Z0-9\\\\-\\\\.\\\\_]+)'+'(\\\\@)([a-zA-Z0-9\\\\-\\\\.]+)'+'(\\\\.)([a-zA-Z]{2,4})$")
+
+    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")
     private String email;
-    @Size(min = 3, max = 20)
+
+    @Column(name = "username", unique = true, nullable = false)
     private String username;
-    @Size(max = 50)
+
+    @Column(name = "password", unique = true, nullable = false)
     private String password;
-    @Size(max = 50)
+
     private String bio;
     private BigDecimal balance;
     @Enumerated(EnumType.STRING)
@@ -42,6 +48,11 @@ public class User implements UserDetails {
     @Enumerated(value = EnumType.STRING)
     private UserStatus userStatus;
     private Date removeDate;
+    @Column(name = "is_blocked")
+    private Boolean isBlocked = false;
+
+    @Column(name = "blocked_at")
+    private LocalDateTime blockedAt;
 
     public User(String username) {
     }
@@ -72,9 +83,25 @@ public class User implements UserDetails {
         return true;
     }
 
+    public void setBlockedAt(LocalDateTime blockedAt) {
+        this.blockedAt = blockedAt;
+    }
+
+    public void setBlocked(Boolean blocked) {
+        isBlocked = blocked;
+    }
+
     @Override
     public boolean isEnabled() {
         return true;
     }
+
+//    public void setBlockedAt(Date date) {
+//
+//    }
+//
+//    public void setBlocked(boolean b) {
+//    }
+
 }
 

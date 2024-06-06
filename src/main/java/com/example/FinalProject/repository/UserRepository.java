@@ -1,6 +1,5 @@
 package com.example.FinalProject.repository;
 
-import com.example.FinalProject.entity.Organization;
 import com.example.FinalProject.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -20,4 +19,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findAllByRemoveDateIsNull();
 
     List<User> findByBalanceGreaterThan(BigDecimal amount);
+    Optional<User> findByUsernameAndId(String username, Long id);
 }

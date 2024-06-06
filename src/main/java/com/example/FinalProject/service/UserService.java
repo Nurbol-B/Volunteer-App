@@ -23,4 +23,7 @@ public interface UserService {
     UserDto updateUser(Long userId, UserDetailsDto userDetailsDto);
     void transferBalance(Long fromUserId, Long toUserId, BigDecimal amount);
     List<UserDto> getUsersWithBalanceGreaterThan(BigDecimal amount);
+    void blockUser(String username,Long id);
+    void unlockUser (Long id, String username);
+    boolean isBlocked (String username);
 }

@@ -8,6 +8,7 @@ import com.example.FinalProject.enums.Role;
 import com.example.FinalProject.enums.UserStatus;
 import com.example.FinalProject.exception.InsufficientBalanceException;
 import com.example.FinalProject.exception.NotFoundException;
+import com.example.FinalProject.exception.UserNotFoundException;
 import com.example.FinalProject.mapper.UserDetailsMapper;
 import com.example.FinalProject.mapper.UserMapper;
 import com.example.FinalProject.repository.CodeConfirmRepository;
@@ -23,9 +24,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @Service
 @RequiredArgsConstructor
@@ -67,7 +71,7 @@ public class UserServiceImpl implements UserService {
             user.setRemoveDate(new Date(System.currentTimeMillis()));
             userRepository.save(user);
             return "Deleted";
-        } else throw new NullPointerException(String.format("Пользователь с id %s не найдена", id));
+        } else throw new NullPointerException(String.format("Пользователь с id %s не найден", id));
     }
 
     @Override
@@ -78,6 +82,34 @@ public class UserServiceImpl implements UserService {
         return userMapper.toDto(userRepository.save(user));
     }
 
+
+    @Override
+    public void blockUser(String username, Long id) {
+        try {
+            User user = userRepository.findByUsernameAndId(username,id)
+                    .orElseThrow(() -> new NotFoundException("Пользователь с именем " + username + "не найден"));
+            user.setIsBlocked(true);
+            user.setUserStatus(UserStatus.BLOCKED);
+            user.setBlockedAt(LocalDateTime.now());
+            userRepository.save(user);
+        } catch (Exception e) {
+            throw new NotFoundException("ользователь с именем " + username + "не найден");
+        }
+    }
+
+    @Override
+    public void unlockUser(Long id,String username) {
+        User user = userRepository.findByUsernameAndRemoveDateIsNull(username)
+                .orElseThrow(() -> new UserNotFoundException("User not found or already unlocked: " + username));
+
+        user.setBlocked(false);
+        userRepository.save(user);
+    }
+
+    @Override
+    public boolean isBlocked(String username) {
+        return false;
+    }
 
     @Override
     public BigDecimal getBalanceByUsername(String username) {

@@ -93,3 +93,15 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 }
+        @PutMapping("/block/{id}/{username}")
+        public ResponseEntity<Void> blockUser(@PathVariable Long id, @PathVariable String username) {
+            userService.blockUser(username, id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+
+        @PutMapping("/unBlock/{id}")
+        public ResponseEntity<Void> unblockUser(@PathVariable Long id, @RequestBody String username) {
+            userService.unlockUser(id, username);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+    }

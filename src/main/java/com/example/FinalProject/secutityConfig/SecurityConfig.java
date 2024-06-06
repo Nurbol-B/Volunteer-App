@@ -47,6 +47,7 @@
 package com.example.FinalProject.secutityConfig;
 
 import com.example.FinalProject.enums.Role;
+import com.example.FinalProject.filters.JwtAutenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
