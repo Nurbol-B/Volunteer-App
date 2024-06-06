@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/bonus-history")
+@RequestMapping("/api/v1/bonus-history")
 public class BonusHistoryController {
     private final BonusHistoryService bonusHistoryService;
     public BonusHistoryController(BonusHistoryService bonusHistoryService) {
