@@ -3,7 +3,6 @@ package com.example.FinalProject.service.impl;
 import com.example.FinalProject.dto.OrganizationDto;
 import com.example.FinalProject.dto.SocialTaskDto;
 import com.example.FinalProject.entity.Organization;
-import com.example.FinalProject.entity.SocialTask;
 import com.example.FinalProject.enums.StatusTask;
 import com.example.FinalProject.exception.NotFoundException;
 import com.example.FinalProject.mapper.OrganizationMapper;
@@ -38,7 +37,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public OrganizationDto findById(Long id) {
         Organization organization = organizationRepository.findByIdAndRemoveDateIsNull(id)
-                .orElseThrow(() -> new EntityNotFoundException("Организация с id " + id + " не найден"));
+                .orElseThrow(() -> new EntityNotFoundException("Организация с id " + id + " не найдена!"));
         return organizationMapper.toDto(organization);
     }
 
@@ -56,13 +55,13 @@ public class OrganizationServiceImpl implements OrganizationService {
             organization.setRemoveDate(new Date(System.currentTimeMillis()));
             organizationRepository.save(organization);
             return "Deleted";
-        } else throw new NullPointerException(String.format("Организация с id %s не найдена", id));
+        } else throw new NullPointerException(String.format("Организация с id %s не найдена!", id));
     }
 
     @Override
     public OrganizationDto updateOrganization(Long organizationId, OrganizationDto organizationDto) {
         Organization organization = organizationRepository.findById(organizationId)
-                .orElseThrow(() -> new NotFoundException("Организация с id " + organizationId + " не найдено"));
+                .orElseThrow(() -> new NotFoundException("Организация с id " + organizationId + " не найдена!"));
 
         organization.setName(organizationDto.getName());
         organization.setContact(organizationDto.getContact());
@@ -75,7 +74,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public List<SocialTaskDto> listAllTasks(Long organizationId) {
         Organization organization = organizationRepository.findById(organizationId)
-                .orElseThrow(() -> new EntityNotFoundException("Организация с id " + organizationId + " не найдена"));
+                .orElseThrow(() -> new EntityNotFoundException("Организация с id " + organizationId + " не найдена!"));
 
         return organization.getSocialTasks().stream()
                 .map(socialTaskMapper::toDto)
@@ -84,7 +83,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public List<SocialTaskDto> getTasksByStatus(Long organizationId, StatusTask status) {
         Organization organization = organizationRepository.findById(organizationId)
-                .orElseThrow(() -> new EntityNotFoundException("Организация с id " + organizationId + " не найдена"));
+                .orElseThrow(() -> new EntityNotFoundException("Организация с id " + organizationId + " не найдена!"));
         return organization.getSocialTasks().stream()
                 .filter(task -> task.getStatusTask() == status)
                 .map(socialTaskMapper::toDto)

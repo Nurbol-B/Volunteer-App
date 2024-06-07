@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto findById(Long id) {
         User user = userRepository.findByIdAndRemoveDateIsNull(id)
-                .orElseThrow(() -> new EntityNotFoundException("Пользователь не найден с " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Пользователь с id: " + id + " не найден!"));
         return userMapper.toDto(user);
     }
 
@@ -70,13 +70,13 @@ public class UserServiceImpl implements UserService {
             user.setRemoveDate(new Date(System.currentTimeMillis()));
             userRepository.save(user);
             return "Deleted";
-        } else throw new NullPointerException(String.format("Пользователь с id %s не найден", id));
+        } else throw new NullPointerException(String.format("Пользователь с id %s не найден!", id));
     }
 
     @Override
     public UserDto updateUser(Long userId, UserDetailsDto updatedUserDto) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователь с id " + userId + " не найдено"));
+                .orElseThrow(() -> new NotFoundException("Пользователь с id " + userId + " не найден!"));
         userDetailsMapper.updateUserFromDto(user, updatedUserDto);
         return userMapper.toDto(userRepository.save(user));
     }
@@ -116,14 +116,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public BigDecimal getBalanceByUsername(String username) {
         User user = userRepository.findByUsernameAndRemoveDateIsNull(username)
-                .orElseThrow(()->new NotFoundException("Пользователь с именем " + username + "не найден"));
+                .orElseThrow(()->new NotFoundException("Пользователь с именем " + username + " не найден!"));
         return user.getBalance();
     }
 
     @Override
     public UserDto changeRole(Long id, Role role) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Пользователь не найден с " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Пользователь с id: " + id + " не найден!"));
         user.setRole(role);
         User updateUserRole = userRepository.save(user);
         return userMapper.toDto(updateUserRole);
@@ -168,15 +168,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public void transferBalance(Long fromUserId, Long toUserId, BigDecimal amount) {
         User fromUser = userRepository.findById(fromUserId)
-                .orElseThrow(() -> new EntityNotFoundException("Пользователь с id " + fromUserId + " не найден"));
+                .orElseThrow(() -> new EntityNotFoundException("Пользователь с id: " + fromUserId + " не найден!"));
         User toUser = userRepository.findById(toUserId)
-                .orElseThrow(() -> new EntityNotFoundException("Пользователь с id " + toUserId + " не найден"));
+                .orElseThrow(() -> new EntityNotFoundException("Пользователь с id: " + toUserId + " не найден!"));
 
         BigDecimal fromUserBalance = fromUser.getBalance();
         BigDecimal toUserBalance = toUser.getBalance();
 
         if (fromUserBalance.compareTo(amount) < 0) {
-            throw new InsufficientBalanceException("Недостаточно средств для перевода.");
+            throw new InsufficientBalanceException("Недостаточно средств для перевода!");
         }
 
         fromUser.setBalance(fromUserBalance.subtract(amount));
