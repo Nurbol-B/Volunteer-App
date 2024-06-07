@@ -48,7 +48,7 @@ public class SocialTaskServiceImpl implements SocialTaskService {
     @Override
     public SocialTaskDto findById(Long id) {
         SocialTask socialTask = socialTaskRepository.findByIdAndRemoveDateIsNull(id)
-                .orElseThrow(() -> new EntityNotFoundException("Задача с id " + id + " не найден"));
+                .orElseThrow(() -> new EntityNotFoundException("Задание с id " + id + " не найдено!"));
         return socialTaskMapper.toDto(socialTask);
     }
 
@@ -57,7 +57,7 @@ public class SocialTaskServiceImpl implements SocialTaskService {
         Long organizationId = socialTaskDto.getOrganizationId();
 
         Organization organization = organizationRepository.findById(organizationId)
-                .orElseThrow(() -> new RuntimeException("Организация с id " + organizationId + " не найдена"));
+                .orElseThrow(() -> new RuntimeException("Организация с id " + organizationId + " не найдена!"));
 
         SocialTask socialTask = socialTaskMapper.toEntity(socialTaskDto);
         socialTask.setOrganization(organization);
@@ -76,13 +76,13 @@ public class SocialTaskServiceImpl implements SocialTaskService {
             socialTask.setRemoveDate(new Date(System.currentTimeMillis()));
             socialTaskRepository.save(socialTask);
             return "Deleted";
-        } else throw new NullPointerException(String.format("Задание с id %s не найдена", id));
+        } else throw new NullPointerException(String.format("Задание с id %s не найдено!", id));
     }
 
     @Override
     public void changeTaskStatus(Long taskId, StatusTask statusTask) {
         SocialTask socialTask = socialTaskRepository.findById(taskId)
-                .orElseThrow(() -> new NotFoundException("Задание с id  " + taskId + " не найдено"));
+                .orElseThrow(() -> new NotFoundException("Задание с id  " + taskId + " не найдено!"));
         socialTask.setStatusTask(statusTask);
         socialTaskRepository.save(socialTask);
     }
@@ -96,10 +96,10 @@ public class SocialTaskServiceImpl implements SocialTaskService {
     @Override
     public SocialTaskDto assignTaskToUser(Long taskId, Long userId) {
         Optional<SocialTask> taskOpt = Optional.ofNullable(socialTaskRepository.findById(taskId)
-                .orElseThrow(() -> new EntityNotFoundException("Задание с id   " + taskId + " не найдено")));
+                .orElseThrow(() -> new EntityNotFoundException("Задание с id   " + taskId + " не найдено!")));
         if (taskOpt.isPresent()) {
             SocialTask task = taskOpt.get();
-            task.setAssignedUser(userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("Пользователь не найдено с id " + userId)));
+            task.setAssignedUser(userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("Пользователь с id " + userId + " не найден!")));
             task.setStatusTask(StatusTask.IN_PROGRESS);
             return socialTaskMapper.toDto(socialTaskRepository.save(task));
         }
@@ -120,7 +120,7 @@ public class SocialTaskServiceImpl implements SocialTaskService {
                         BigDecimal newBalance = currentBalance.add(bonus);
                         assignedUser.setBalance(newBalance);
                         task.setBonusForExecution(BigDecimal.ZERO);
-                        bonusHistoryService.addBonusHistory(assignedUser.getId(), bonus, currentBalance, newBalance, "Task completed: " + task.getTitle());
+                        bonusHistoryService.addBonusHistory(assignedUser.getId(), bonus, currentBalance, newBalance, "Задание выполнено! " + task.getTitle());
                         userRepository.save(assignedUser);
                     }
                 }
@@ -130,7 +130,7 @@ public class SocialTaskServiceImpl implements SocialTaskService {
                 throw new TaskNotInProgressException("Задача должна быть в статусе 'IN_PROGRESS', чтобы быть выполненной.");
             }
         } else {
-            throw new NoSuchElementException("Задача с id " + taskId + " не найдена.");
+            throw new NoSuchElementException("Задача с id " + taskId + " не найдена!");
         }
     }
 
@@ -146,7 +146,7 @@ public class SocialTaskServiceImpl implements SocialTaskService {
                 throw new TaskNotInProgressException("Задача должна быть в статусе 'IN_PROGRESS', чтобы отменить его.");
             }
         } else {
-            throw new EntityNotFoundException("Задача с id " + taskId + " не найдена.");
+            throw new EntityNotFoundException("Задача с id " + taskId + " не найдена!");
         }
     }
 
@@ -154,10 +154,10 @@ public class SocialTaskServiceImpl implements SocialTaskService {
     public SocialTaskDto unAssignUser(Long taskId, Long userId) {
         Optional<SocialTask> taskOpt = socialTaskRepository.findById(taskId);
         if (!taskOpt.isPresent()) {
-            throw new EntityNotFoundException("Задание с id " + taskId + " не найдено");
+            throw new EntityNotFoundException("Задание с id " + taskId + " не найдено!");
         }
         SocialTask task = taskOpt.get();
-        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("Пользователь с id " + userId + " не найден"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("Пользователь с id " + userId + " не найден!"));
         if (task.getAssignedUser() != null && task.getAssignedUser().getId().equals(user.getId())) {
             task.setAssignedUser(null);
             task.setStatusTask(StatusTask.PENDING);
@@ -181,11 +181,11 @@ public class SocialTaskServiceImpl implements SocialTaskService {
     @Override
     public OrganizationDetailsDto getOrganizationDetails(Long taskId) {
         SocialTask socialTask = socialTaskRepository.findById(taskId)
-                .orElseThrow(() -> new EntityNotFoundException("Задача социальной сети с id " + taskId + " не найдена"));
+                .orElseThrow(() -> new EntityNotFoundException("Задача социальной сети с id " + taskId + " не найдена!"));
 
         Organization organization = socialTask.getOrganization();
         if (organization == null) {
-            throw new EntityNotFoundException("Организация для задачи социальной сети с id " + taskId + " не найдена");
+            throw new EntityNotFoundException("Организация для задачи социальной сети с id " + taskId + " не найдена!");
         }
         return organizationDetailsMapper.toDto(organization);
     }
