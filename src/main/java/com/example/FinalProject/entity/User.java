@@ -47,12 +47,20 @@ public class User implements UserDetails {
     private List<CodeConfirm> codeConfirms = new ArrayList<>();
     @Enumerated(value = EnumType.STRING)
     private UserStatus userStatus;
+
     private Date removeDate;
+
     @Column(name = "is_blocked")
     private Boolean isBlocked = false;
 
+    @Column(name = "is_un_blocked")
+    private Boolean isUnBlocked = false;
+
     @Column(name = "blocked_at")
     private LocalDateTime blockedAt;
+
+    @Column(name = "un_blocked_at")
+    private LocalDateTime unBlockedAt;
 
     public User(String username) {
     }
@@ -96,12 +104,15 @@ public class User implements UserDetails {
         return true;
     }
 
-//    public void setBlockedAt(Date date) {
-//
-//    }
-//
-//    public void setBlocked(boolean b) {
-//    }
+    public void setUnBlockedAt(LocalDateTime unBlockedAt) {
+        this.unBlockedAt = unBlockedAt;
+    }
 
+    public void setUnBlocked(Boolean unBlocked) {
+        isUnBlocked = unBlocked;
+    }
+
+    public void setUserStatus(UserStatus userStatus, String s) {
+    }
 }
 

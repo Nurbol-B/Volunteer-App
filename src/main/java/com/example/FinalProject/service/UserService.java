@@ -21,7 +21,7 @@ public interface UserService {
     ResponseEntity<?> confirmEmail(Long code);
     String deleteById(Long id);
     UserDto updateUser(Long userId, UserDetailsDto userDetailsDto);
-    void blockUser(String username,Long id);
-    void unlockUser (Long id, String username);
+    void blockUser(Long id);
+    void unBlockUser (Long id);
     boolean isBlocked (String username);
 }

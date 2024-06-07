@@ -82,15 +82,15 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Не удалось обновить профиль пользователя: " + e.getMessage());
         }
     }
-        @PutMapping("/block/{id}/{username}")
-        public ResponseEntity<Void> blockUser(@PathVariable Long id, @PathVariable String username) {
-            userService.blockUser(username, id);
+        @PutMapping("/block/{id}")
+        public ResponseEntity<Void> blockUser(@PathVariable Long id) {
+            userService.blockUser(id);
             return new ResponseEntity<>(HttpStatus.OK);
         }
 
         @PutMapping("/unBlock/{id}")
-        public ResponseEntity<Void> unblockUser(@PathVariable Long id, @RequestBody String username) {
-            userService.unlockUser(id, username);
+        public ResponseEntity<Void> unBlockUser(@PathVariable Long id) {
+            userService.unBlockUser(id);
             return new ResponseEntity<>(HttpStatus.OK);
         }
     }

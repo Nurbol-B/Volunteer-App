@@ -87,25 +87,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void blockUser(String username, Long id) {
+    public void blockUser(Long id) {
         try {
-            User user = userRepository.findByUsernameAndId(username,id)
-                    .orElseThrow(() -> new NotFoundException("Пользователь с именем " + username + "не найден"));
+            User user = userRepository.findById(id)
+                    .orElseThrow(() -> new NotFoundException("Пользователь с ID: " + id + "не найден."));
             user.setIsBlocked(true);
-            user.setUserStatus(UserStatus.BLOCKED);
+            user.setUserStatus(UserStatus.BLOCKED, " Пользователь с ID: " + id + "был заблокирован.");
             user.setBlockedAt(LocalDateTime.now());
             userRepository.save(user);
         } catch (Exception e) {
-            throw new NotFoundException("ользователь с именем " + username + "не найден");
+            throw new NotFoundException("Пользователь с ID: " + id + "не найден.");
         }
     }
 
     @Override
-    public void unlockUser(Long id,String username) {
-        User user = userRepository.findByUsernameAndRemoveDateIsNull(username)
-                .orElseThrow(() -> new UserNotFoundException("User not found or already unlocked: " + username));
-
-        user.setBlocked(false);
+    public void unBlockUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Пользователь не найден или уже разблокирован: " + id));
+        user.setIsBlocked(false);
+        user.setUserStatus(UserStatus.UNBLOCKED, " Пользователь с ID: " + id + "был разблокирован.");
+        user.setUnBlockedAt(LocalDateTime.now());
         userRepository.save(user);
     }
 

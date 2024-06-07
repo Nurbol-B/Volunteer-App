@@ -12,7 +12,8 @@ public enum UserStatus {
     NEW("Новый"),
     ACTIVE("Подтвержденный"),
     CONFIRM("Подтвержденный"),
-    BLOCKED("Заблокирован")
+    BLOCKED("Заблокирован"),
+    UNBLOCKED("Разблокирован")
     ;
 
     String DESCRIPTION;
