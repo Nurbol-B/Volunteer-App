@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.swing.*;
+import java.awt.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;
@@ -33,6 +35,5 @@ public class SocialTask {
     @JoinColumn(name = "user_id")
     private User assignedUser;
     private Date removeDate;
-
 }
 
