@@ -92,13 +92,13 @@ public class UserController {
         userService.transferBalance(fromUserId, toUserId, amount);
         return ResponseEntity.ok().build();
     }
+
         @PutMapping("/block/{id}")
         public ResponseEntity<Void> blockUser(@PathVariable Long id) {
             userService.blockUser(id);
             return new ResponseEntity<>(HttpStatus.OK);
         }
 
-        @PutMapping("/unBlock/{id}")
         public ResponseEntity<Void> unblockUser(@PathVariable Long id) {
             userService.unlockUser(id);
             return new ResponseEntity<>(HttpStatus.OK);

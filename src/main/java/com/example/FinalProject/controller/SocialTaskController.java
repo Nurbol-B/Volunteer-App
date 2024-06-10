@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.*;
+import java.awt.*;
 import java.util.List;
 
 @RestController
@@ -34,7 +36,7 @@ public class SocialTaskController {
         }
     }
 
-    @PostMapping()
+    @PostMapping("/createTask")
     public ResponseEntity<SocialTaskDto> createSocialTask(@RequestBody SocialTaskDto socialTaskDto) {
         SocialTaskDto createSocialTask = socialTaskService.createSocialTask(socialTaskDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createSocialTask);

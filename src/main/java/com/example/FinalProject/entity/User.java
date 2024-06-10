@@ -46,9 +46,18 @@ public class User implements UserDetails {
     @Enumerated(value = EnumType.STRING)
     private UserStatus userStatus;
     private Date removeDate;
-    @Setter
+
+    @Column(name = "is_blocked")
+    private Boolean isBlocked = false;
+
+    @Column(name = "is_un_blocked")
+    private Boolean isUnBlocked = false;
+
     @Column(name = "blocked_at")
     private LocalDateTime blockedAt;
+
+    @Column(name = "un_blocked_at")
+    private LocalDateTime unBlockedAt;
 
     public User(String username) {
     }
@@ -58,6 +67,7 @@ public class User implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return  List.of(new SimpleGrantedAuthority(role.name()));
     }
+
     @Override
     public String getUsername() {
         return email;
@@ -83,5 +93,15 @@ public class User implements UserDetails {
         return true;
     }
 
+    public void setUnBlockedAt(LocalDateTime unBlockedAt) {
+        this.unBlockedAt = unBlockedAt;
+    }
+
+    public void setUnBlocked(Boolean unBlocked) {
+        isUnBlocked = unBlocked;
+    }
+
+    public void setUserStatus(UserStatus userStatus, String s) {
+    }
 }
 
