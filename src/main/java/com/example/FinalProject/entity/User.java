@@ -23,7 +23,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
-public class User implements UserDetails {
+public class User extends BaseEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -45,7 +45,7 @@ public class User implements UserDetails {
     private List<CodeConfirm> codeConfirms = new ArrayList<>();
     @Enumerated(value = EnumType.STRING)
     private UserStatus userStatus;
-    private Date removeDate;
+    private LocalDateTime removeDate;
 
     @Column(name = "is_blocked")
     private Boolean isBlocked = false;

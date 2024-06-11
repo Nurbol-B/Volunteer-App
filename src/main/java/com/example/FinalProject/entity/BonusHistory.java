@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Data
 @Table
 @Entity
-public class BonusHistory {
+public class BonusHistory extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,4 +19,6 @@ public class BonusHistory {
     private BigDecimal balanceAfter;
     private String description;
     private LocalDateTime timestamp;
+    private LocalDateTime removeDate;
+
 }

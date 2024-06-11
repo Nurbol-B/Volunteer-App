@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
         Optional<User> optionalUser = userRepository.findByIdAndRemoveDateIsNull(id);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            user.setRemoveDate(new Date(System.currentTimeMillis()));
+            user.setRemoveDate(LocalDateTime.now());
             userRepository.save(user);
             return "Deleted";
         } else throw new NullPointerException(String.format("Пользователь с id %s не найден!", id));

@@ -10,13 +10,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
 @Entity
 @Table
 
-public class SocialTask {
+public class SocialTask extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -34,6 +35,6 @@ public class SocialTask {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User assignedUser;
-    private Date removeDate;
+    private LocalDateTime removeDate;
 }
 

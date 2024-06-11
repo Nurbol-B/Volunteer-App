@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import javax.swing.*;
 import java.awt.*;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -75,7 +76,7 @@ public class SocialTaskServiceImpl implements SocialTaskService {
         Optional<SocialTask> optionalSocialTask = socialTaskRepository.findByIdAndRemoveDateIsNull(id);
         if (optionalSocialTask.isPresent()) {
             SocialTask socialTask = optionalSocialTask.get();
-            socialTask.setRemoveDate(new Date(System.currentTimeMillis()));
+            socialTask.setRemoveDate(LocalDateTime.now());
             socialTaskRepository.save(socialTask);
             return "Deleted";
         } else throw new NullPointerException(String.format("Задание с id %s не найдено!", id));

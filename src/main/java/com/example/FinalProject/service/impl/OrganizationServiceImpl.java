@@ -14,6 +14,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -52,7 +53,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         Optional<Organization> optionalOrganization = organizationRepository.findByIdAndRemoveDateIsNull(id);
         if (optionalOrganization.isPresent()) {
             Organization organization = optionalOrganization.get();
-            organization.setRemoveDate(new Date(System.currentTimeMillis()));
+            organization.setRemoveDate(LocalDateTime.now());
             organizationRepository.save(organization);
             return "Deleted";
         } else throw new NullPointerException(String.format("Организация с id %s не найдена!", id));

@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.springframework.data.repository.cdi.Eager;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static jakarta.persistence.FetchType.EAGER;
@@ -14,7 +15,7 @@ import static jakarta.persistence.FetchType.EAGER;
 @Table
 @Entity
 
-public class Organization {
+public class Organization extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,6 +25,6 @@ public class Organization {
     private String address;
     @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL,fetch = EAGER)
     private List<SocialTask> socialTasks;
-    private Date removeDate;
+    private LocalDateTime removeDate;
 
 }
