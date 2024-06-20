@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -22,6 +23,7 @@ public class SocialTaskDto {
     private Long organizationId;
     private Long userId;
     private Date removeDate;
+    private List<TaskReportDto> taskReports;
 
 
 

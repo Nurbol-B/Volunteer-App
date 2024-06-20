@@ -6,9 +6,11 @@ import com.example.FinalProject.dto.SocialTaskDto;
 import com.example.FinalProject.dto.UserDetailsDto;
 import com.example.FinalProject.enums.StatusTask;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -20,10 +22,11 @@ public interface SocialTaskService {
     void changeTaskStatus(Long taskId, StatusTask statusTask);
     void getOrganizationTasks(Long organizationId);
     SocialTaskDto assignTaskToUser(Long taskId, Long userId);
-    SocialTaskDto completeTask(Long taskId);
+    SocialTaskDto completeTask(Long taskId, MultipartFile reportPhoto, String reportDescription) throws IOException;
     SocialTaskDto cancelSocialTask(Long taskId);
     SocialTaskDto unAssignUser(Long taskId, Long userId);
     UserDetailsDto getAssignedUserDetails(Long userId);
     OrganizationDetailsDto getOrganizationDetails(Long taskId);
     List<SocialTaskDto> listAssignedTasks(Long userId);
+
 }

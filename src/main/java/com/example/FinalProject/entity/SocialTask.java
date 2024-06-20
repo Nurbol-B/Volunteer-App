@@ -4,14 +4,11 @@ import com.example.FinalProject.enums.StatusTask;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import javax.swing.*;
-import java.awt.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -36,5 +33,9 @@ public class SocialTask extends BaseEntity{
     @JoinColumn(name = "user_id")
     private User assignedUser;
     private LocalDateTime removeDate;
+
+    @OneToMany(mappedBy = "socialTask", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TaskReport> taskReports = new ArrayList<>();
+
 }
 

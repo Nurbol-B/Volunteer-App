@@ -9,9 +9,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -68,13 +70,11 @@ public class SocialTaskController {
         }
     }
     @PutMapping("/complete/{taskId}")
-    public ResponseEntity<SocialTaskDto> completeTask(@PathVariable Long taskId) {
-        SocialTaskDto task = socialTaskService.completeTask(taskId);
-        if (task != null) {
-            return ResponseEntity.ok(task);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<SocialTaskDto> completeTask(@PathVariable Long taskId,
+                                                      @RequestParam("reportPhoto") MultipartFile reportPhoto,
+                                                      @RequestParam("reportDescription") String reportDescription) throws IOException {
+        SocialTaskDto taskDto = socialTaskService.completeTask(taskId, reportPhoto, reportDescription);
+        return ResponseEntity.ok(taskDto);
     }
 
     @PutMapping("/cancel/{taskId}")

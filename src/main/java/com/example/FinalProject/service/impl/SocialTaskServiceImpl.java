@@ -1,35 +1,36 @@
 package com.example.FinalProject.service.impl;
 
 import com.example.FinalProject.dto.OrganizationDetailsDto;
-import com.example.FinalProject.dto.OrganizationDto;
 import com.example.FinalProject.dto.SocialTaskDto;
+import com.example.FinalProject.dto.TaskReportDto;
 import com.example.FinalProject.dto.UserDetailsDto;
 import com.example.FinalProject.entity.Organization;
 import com.example.FinalProject.entity.SocialTask;
+import com.example.FinalProject.entity.TaskReport;
 import com.example.FinalProject.entity.User;
 import com.example.FinalProject.enums.StatusTask;
 import com.example.FinalProject.exception.NotFoundException;
 import com.example.FinalProject.exception.TaskNotInProgressException;
 import com.example.FinalProject.mapper.OrganizationDetailsMapper;
 import com.example.FinalProject.mapper.SocialTaskMapper;
+import com.example.FinalProject.mapper.TaskReportMapper;
 import com.example.FinalProject.mapper.UserDetailsMapper;
 import com.example.FinalProject.repository.OrganizationRepository;
 import com.example.FinalProject.repository.SocialTaskRepository;
+import com.example.FinalProject.repository.TaskReportRepository;
 import com.example.FinalProject.repository.UserRepository;
 import com.example.FinalProject.service.BonusHistoryService;
 import com.example.FinalProject.service.SocialTaskService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.swing.*;
-import java.awt.*;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Date;
+import java.util.*;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -43,6 +44,9 @@ public class SocialTaskServiceImpl implements SocialTaskService {
     private final UserDetailsMapper userDetailsMapper;
     private final OrganizationDetailsMapper organizationDetailsMapper;
     private final BonusHistoryService bonusHistoryService;
+    private final TaskReportRepository taskReportRepository;
+    private final TaskReportMapper taskReportMapper;
+
     @Override
     public List<SocialTaskDto> getAll() {
         return socialTaskMapper.toDtoList(socialTaskRepository.findAllByRemoveDateIsNull());
@@ -61,7 +65,9 @@ public class SocialTaskServiceImpl implements SocialTaskService {
 
         Organization organization = organizationRepository.findById(organizationId)
                 .orElseThrow(() -> new RuntimeException("Организация с id " + organizationId + " не найдена!"));
-
+        if (socialTaskDto.getTaskReports() == null) {
+            socialTaskDto.setTaskReports(new ArrayList<>());
+        }
         SocialTask socialTask = socialTaskMapper.toEntity(socialTaskDto);
         socialTask.setOrganization(organization);
         socialTask.setStatusTask(StatusTask.PENDING);
@@ -110,7 +116,7 @@ public class SocialTaskServiceImpl implements SocialTaskService {
 
     }
 
-    public SocialTaskDto completeTask(Long taskId) {
+    public SocialTaskDto completeTask(Long taskId, MultipartFile reportPhoto, String reportDescription) throws IOException {
         Optional<SocialTask> taskOpt = socialTaskRepository.findById(taskId);
         if (taskOpt.isPresent()) {
             SocialTask task = taskOpt.get();
@@ -127,8 +133,23 @@ public class SocialTaskServiceImpl implements SocialTaskService {
                         userRepository.save(assignedUser);
                     }
                 }
+
+                TaskReport taskReport = new TaskReport();
+                try {
+                    byte[] photoBytes = reportPhoto.getBytes();
+                    String base64EncodedPhoto = Base64.getEncoder().encodeToString(photoBytes);
+                    taskReport.setPhoto(base64EncodedPhoto);
+                } catch (IOException e) {
+                }
+
+                taskReport.setDescription(reportDescription);
+                taskReport.setSocialTask(task);
+                taskReportRepository.save(taskReport);
+                task.getTaskReports().add(taskReport);
                 task.setStatusTask(StatusTask.COMPLETED);
-                return socialTaskMapper.toDto(socialTaskRepository.save(task));
+                socialTaskRepository.save(task);
+
+                return socialTaskMapper.toDto(task);
             } else {
                 throw new TaskNotInProgressException("Задача должна быть в статусе 'IN_PROGRESS', чтобы быть выполненной.");
             }
