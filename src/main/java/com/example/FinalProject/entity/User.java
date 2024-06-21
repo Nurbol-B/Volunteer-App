@@ -4,7 +4,6 @@ import com.example.FinalProject.enums.Role;
 import com.example.FinalProject.enums.UserStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -14,7 +13,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 @Data
@@ -59,7 +57,9 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "un_blocked_at")
     private LocalDateTime unBlockedAt;
 
-    public User(String username) {
+    private int bonus;
+
+    public User(String username, String mail, int i) {
     }
 
 
