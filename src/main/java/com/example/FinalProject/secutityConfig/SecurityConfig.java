@@ -87,6 +87,15 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/api/v1/social-tasks/**").hasAnyAuthority(Role.ADMIN.name())
                                 .requestMatchers(HttpMethod.GET, "/api/v1/organizations/**").hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
                                 .requestMatchers(HttpMethod.POST, "/api/v1/organizations/**").hasAnyAuthority(Role.ADMIN.name())
+                                .requestMatchers(HttpMethod.GET, "/api/v1/products/**").hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
+                                .requestMatchers(HttpMethod.POST, "/api/v1/products/**").hasAnyAuthority(Role.ADMIN.name())
+                                .requestMatchers(HttpMethod.GET, "/api/v1/bonus-history/**").hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
+                                .requestMatchers(HttpMethod.POST, "/api/v1/bonus-history/**").hasAnyAuthority(Role.ADMIN.name())
+                                .requestMatchers(HttpMethod.GET, "/api/v1/cart/**").hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
+                                .requestMatchers(HttpMethod.POST, "/api/v1/cart/**").hasAnyAuthority(Role.ADMIN.name())
+                                .requestMatchers(HttpMethod.GET, "/api/v1/orders/**").hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
+                                .requestMatchers(HttpMethod.POST, "/api/v1/orders/**").hasAnyAuthority(Role.ADMIN.name())
+
                                 .anyRequest().authenticated()
                 )
                 .sessionManagement(sessionManagement ->
