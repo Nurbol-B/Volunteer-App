@@ -4,6 +4,7 @@ import com.example.FinalProject.dto.OrderDto;
 import com.example.FinalProject.entity.*;
 import com.example.FinalProject.mapper.OrderMapper;
 import com.example.FinalProject.repository.*;
+import com.example.FinalProject.service.BonusHistoryService;
 import com.example.FinalProject.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
@@ -13,9 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.security.SecureRandom;
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,37 +29,45 @@ public class OrderServiceImpl implements OrderService {
     private final CartRepository cartRepository;
     private final JavaMailSender mailSender;
     private final OrderMapper orderMapper;
+    private final UserRepository userRepository;
+    private final BonusHistoryService bonusHistoryService;
 
     @Transactional
     public OrderDto placeOrder(Long userId, String pickupLocation) {
-        Optional<Cart> cartOpt = cartRepository.findByUserId(userId);
-        if (!cartOpt.isPresent()) {
-            throw new IllegalArgumentException("Корзина для пользователя с id " + userId + " не найдена!");
+        Cart cart = cartRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("Корзина не найден"));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
+
+        BigDecimal totalAmount = cart.getItems().stream()
+                .map(item -> item.getProduct().getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal currentBalance = user.getBalance();
+        if (currentBalance.compareTo(totalAmount) < 0) {
+            throw new RuntimeException("Недостаточно средств на балансе");
         }
 
-        Cart cart = cartOpt.get();
-        User user = cart.getUser();
-
         Order order = new Order();
-        order.setUser(user);
         order.setPickupLocation(pickupLocation);
+        order.setTotalAmount(totalAmount);
         order.setUniqueCode(generateUniqueCode());
-
-        List<OrderItem> orderItems = cart.getItems().stream().map(cartItem -> {
-            OrderItem orderItem = new OrderItem();
-            orderItem.setOrder(order);
-            orderItem.setProduct(cartItem.getProduct());
-            orderItem.setQuantity(cartItem.getQuantity());
-            orderItem.setPrice(cartItem.getProduct().getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity())));
-            return orderItem;
-        }).collect(Collectors.toList());
-
-        order.setItems(orderItems);
-        order.setTotalAmount(orderItems.stream()
-                .map(OrderItem::getPrice)
-                .reduce(BigDecimal.ZERO, BigDecimal::add));
+        order.setUser(user);
 
         orderRepository.save(order);
+
+        cart.getItems().clear();
+        cartRepository.save(cart);
+        BigDecimal newBalance = currentBalance.subtract(totalAmount);
+        user.setBalance(newBalance);
+        userRepository.save(user);
+        bonusHistoryService.addBonusHistory(
+                user.getId(),
+                totalAmount.negate(),
+                currentBalance,
+                newBalance,
+                "Заказ выполнен: " + order.getId()
+        );
 
         String subject = "Подтверждение заказа";
         String text = String.format(
@@ -65,10 +76,6 @@ public class OrderServiceImpl implements OrderService {
                 order.getUniqueCode()
         );
         sendOrderConfirmationEmail(user.getEmail(), subject, text);
-
-        cart.getItems().clear();
-        cartRepository.save(cart);
-
         return orderMapper.toDto(order);
     }
 
@@ -94,4 +101,11 @@ public class OrderServiceImpl implements OrderService {
         return orderMapper.toDto(orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("Заказ с id " + orderId + " не найден!")));
     }
+    @Override
+    public void cancelOrder(Long orderId) {
+        OrderDto orderDto = getOrderById(orderId);
+        orderDto.setRemoveDate(LocalDateTime.now());
+        orderRepository.save(orderMapper.toEntity(orderDto));
+    }
+
 }

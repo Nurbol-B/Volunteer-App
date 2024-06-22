@@ -9,4 +9,5 @@ public interface OrderService {
     OrderDto placeOrder(Long userId, String pickupLocation);
     List<OrderDto> getOrdersByUserId(Long userId);
     OrderDto getOrderById(Long orderId);
+    void cancelOrder(Long orderId);
 }

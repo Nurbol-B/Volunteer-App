@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 @Data
 @NoArgsConstructor
@@ -12,10 +13,9 @@ import java.util.List;
 
 public class OrderDto {
     private Long id;
-    private Long userId;
     private String pickupLocation;
-    private String uniqueCode;
-    private List<OrderItemDto> items;
     private BigDecimal totalAmount;
-
+    private String uniqueCode;
+    private Long userId;
+    private LocalDateTime removeDate;
 }

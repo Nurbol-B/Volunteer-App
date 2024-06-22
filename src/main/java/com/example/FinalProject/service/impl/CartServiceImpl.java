@@ -48,8 +48,7 @@ public class CartServiceImpl implements CartService {
         if (existingItem.isPresent()) {
             CartItemDto cartItemDto = existingItem.get();
             cartItemDto.setQuantity(cartItemDto.getQuantity() + quantity);
-            CartItem cartItem = cartItemMapper.toEntity(cartItemDto);
-            return cartItemMapper.toDto(cartItemRepository.save(cartItem));
+            return cartItemMapper.toDto(cartItemRepository.save(cartItemMapper.toEntity(cartItemDto)));
         } else {
             CartItem newItem = new CartItem();
             newItem.setCart(cartMapper.toEntity(cartDto));

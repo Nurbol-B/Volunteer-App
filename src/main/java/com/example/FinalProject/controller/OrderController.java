@@ -16,6 +16,10 @@ public class OrderController {
 
     private final OrderService orderService;
 
+//    @PostMapping("/place/{userId}/{pickupLocation}")
+//    public OrderDto placeOrder(@PathVariable Long userId, @PathVariable String pickupLocation) {
+//         return orderService.placeOrder(userId, pickupLocation);
+//    }
     @PostMapping("/place")
     public OrderDto placeOrder(@RequestParam Long userId, @RequestParam String pickupLocation) {
          return orderService.placeOrder(userId, pickupLocation);

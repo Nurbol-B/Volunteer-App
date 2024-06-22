@@ -14,17 +14,12 @@ public class Order extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String pickupLocation;
+    private LocalDateTime removeDate;
+    private BigDecimal totalAmount;
+    private String uniqueCode;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
-
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> items;
-
-    private String pickupLocation;
-    private String uniqueCode;
-    private BigDecimal totalAmount;
-    private LocalDateTime removeDate;
-
 }

@@ -45,7 +45,6 @@ public class SocialTaskServiceImpl implements SocialTaskService {
     private final OrganizationDetailsMapper organizationDetailsMapper;
     private final BonusHistoryService bonusHistoryService;
     private final TaskReportRepository taskReportRepository;
-    private final TaskReportMapper taskReportMapper;
 
     @Override
     public List<SocialTaskDto> getAll() {

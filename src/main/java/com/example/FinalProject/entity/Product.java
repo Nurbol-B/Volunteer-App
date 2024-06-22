@@ -18,6 +18,8 @@ public class Product extends BaseEntity {
     private String name;
     private String description;
     private BigDecimal price;
+    private int stockQuantity;
+
     private LocalDateTime removeDate;
 
 }
